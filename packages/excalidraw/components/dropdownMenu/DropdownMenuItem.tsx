@@ -86,7 +86,8 @@ export const DropDownMenuItemBadge = ({
   const { theme } = useExcalidrawAppState();
   const style = {
     display: "inline-flex",
-    marginLeft: "auto",
+    marginLeft: "4px",
+    marginTop: "-2px",
     padding: "2px 4px",
     borderRadius: 6,
     fontSize: 9,
