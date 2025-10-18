@@ -57,6 +57,19 @@ const ALLOWED_LIBRARY_URLS = [
   "raw.githubusercontent.com/excalidraw/excalidraw-libraries",
 ];
 
+let libraryUrlValidator:
+  | string[]
+  | ((libraryUrl: string) => boolean) = ALLOWED_LIBRARY_URLS;
+
+export const setLibraryUrlValidator = (
+  validator:
+    | string[]
+    | ((libraryUrl: string) => boolean)
+    | undefined,
+) => {
+  libraryUrlValidator = validator ?? ALLOWED_LIBRARY_URLS;
+};
+
 type LibraryUpdate = {
   /** deleted library items since last onLibraryChange event */
   deletedItems: Map<LibraryItem["id"], LibraryItem>;
@@ -501,7 +514,7 @@ export const validateLibraryUrl = (
    */
   validator:
     | ((libraryUrl: string) => boolean)
-    | string[] = ALLOWED_LIBRARY_URLS,
+    | string[] = libraryUrlValidator,
 ): true => {
   if (
     typeof validator === "function"

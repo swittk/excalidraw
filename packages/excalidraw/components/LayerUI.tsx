@@ -63,6 +63,8 @@ import { ImageExportDialog } from "./ImageExportDialog";
 import { Island } from "./Island";
 import { JSONExportDialog } from "./JSONExportDialog";
 import { LaserPointerButton } from "./LaserPointerButton";
+import { useBranding } from "../context/BrandingContext";
+import { useRemoteConfig } from "../context/RemoteConfigContext";
 
 import "./LayerUI.scss";
 import "./Toolbar.scss";
@@ -77,6 +79,11 @@ import type {
   BinaryFiles,
   UIAppState,
   AppClassProperties,
+  ToolbarRenderContext,
+  ToolbarConfig,
+  DesktopTopToolbarItem,
+  DesktopBottomToolbarItem,
+  MainMenuDefaultItem,
 } from "../types";
 
 interface LayerUIProps {
@@ -94,6 +101,12 @@ interface LayerUIProps {
   renderTopLeftUI?: ExcalidrawProps["renderTopLeftUI"];
   renderTopRightUI?: ExcalidrawProps["renderTopRightUI"];
   renderCustomStats?: ExcalidrawProps["renderCustomStats"];
+  renderTopToolbar?: ExcalidrawProps["renderTopToolbar"];
+  renderBottomToolbar?: ExcalidrawProps["renderBottomToolbar"];
+  renderMainMenu?: ExcalidrawProps["renderMainMenu"];
+  renderMainMenuItems?: ExcalidrawProps["renderMainMenuItems"];
+  toolbar?: ToolbarConfig;
+  mainMenu?: ExcalidrawProps["mainMenu"];
   UIOptions: AppProps["UIOptions"];
   onExportImage: AppClassProperties["onExportImage"];
   renderWelcomeScreen: boolean;
@@ -103,31 +116,10 @@ interface LayerUIProps {
   generateLinkForSelection?: AppProps["generateLinkForSelection"];
 }
 
-const DefaultMainMenu: React.FC<{
-  UIOptions: AppProps["UIOptions"];
-}> = ({ UIOptions }) => {
-  return (
-    <MainMenu __fallback>
-      <MainMenu.DefaultItems.LoadScene />
-      <MainMenu.DefaultItems.SaveToActiveFile />
-      {/* FIXME we should to test for this inside the item itself */}
-      {UIOptions.canvasActions.export && <MainMenu.DefaultItems.Export />}
-      {/* FIXME we should to test for this inside the item itself */}
-      {UIOptions.canvasActions.saveAsImage && (
-        <MainMenu.DefaultItems.SaveAsImage />
-      )}
-      <MainMenu.DefaultItems.SearchMenu />
-      <MainMenu.DefaultItems.Help />
-      <MainMenu.DefaultItems.ClearCanvas />
-      <MainMenu.Separator />
-      <MainMenu.Group title="Excalidraw links">
-        <MainMenu.DefaultItems.Socials />
-      </MainMenu.Group>
-      <MainMenu.Separator />
-      <MainMenu.DefaultItems.ToggleTheme />
-      <MainMenu.DefaultItems.ChangeCanvasBackground />
-    </MainMenu>
-  );
+type DefaultMainMenuEntry = {
+  key: MainMenuDefaultItem;
+  node: React.ReactNode | null;
+  separatorBefore?: boolean;
 };
 
 const DefaultOverwriteConfirmDialog = () => {
@@ -153,6 +145,12 @@ const LayerUI = ({
   renderTopLeftUI,
   renderTopRightUI,
   renderCustomStats,
+  renderTopToolbar,
+  renderBottomToolbar,
+  renderMainMenu,
+  renderMainMenuItems,
+  toolbar,
+  mainMenu,
   UIOptions,
   onExportImage,
   renderWelcomeScreen,
@@ -163,6 +161,166 @@ const LayerUI = ({
 }: LayerUIProps) => {
   const device = useDevice();
   const tunnels = useInitializeTunnels();
+
+  const toolbarConfigRef: ToolbarConfig | undefined = toolbar;
+  const topToolbarConfig = toolbarConfigRef?.top;
+  const bottomToolbarConfig = toolbarConfigRef?.bottom;
+  const mobileTopConfig = toolbarConfigRef?.mobileTop;
+  const mobileBottomConfig = toolbarConfigRef?.mobileBottom;
+
+  const isTopToolbarItemEnabled = (item: DesktopTopToolbarItem) =>
+    topToolbarConfig?.items?.[item] ?? true;
+
+  const isBottomToolbarItemEnabled = (item: DesktopBottomToolbarItem) =>
+    bottomToolbarConfig?.items?.[item] ?? true;
+
+  const mainMenuConfig = mainMenu ?? {};
+  const isMainMenuItemEnabled = (item: MainMenuDefaultItem) =>
+    mainMenuConfig.items?.[item] ?? true;
+
+  const topToolbarPrepend = topToolbarConfig?.prepend ?? null;
+  const topToolbarAppend = topToolbarConfig?.append ?? null;
+
+  const { renderMainMenuGroup } = useBranding();
+  const { socialLinks } = useRemoteConfig();
+
+  const defaultMainMenuEntries = React.useMemo<DefaultMainMenuEntry[]>(() => {
+    const entries: DefaultMainMenuEntry[] = [
+      {
+        key: "loadScene",
+        node: UIOptions.canvasActions.loadScene ? (
+          <MainMenu.DefaultItems.LoadScene />
+        ) : null,
+      },
+      {
+        key: "saveToActiveFile",
+        node: UIOptions.canvasActions.saveToActiveFile ? (
+          <MainMenu.DefaultItems.SaveToActiveFile />
+        ) : null,
+      },
+      {
+        key: "export",
+        node: UIOptions.canvasActions.export ? (
+          <MainMenu.DefaultItems.Export />
+        ) : null,
+      },
+      {
+        key: "saveAsImage",
+        node: UIOptions.canvasActions.saveAsImage ? (
+          <MainMenu.DefaultItems.SaveAsImage />
+        ) : null,
+      },
+      { key: "search", node: <MainMenu.DefaultItems.SearchMenu /> },
+      { key: "help", node: <MainMenu.DefaultItems.Help /> },
+      {
+        key: "clearCanvas",
+        node: UIOptions.canvasActions.clearCanvas ? (
+          <MainMenu.DefaultItems.ClearCanvas />
+        ) : null,
+      },
+    ];
+
+    const socialItems = (
+      <MainMenu.DefaultItems.Socials links={socialLinks} />
+    );
+
+    const defaultSocialGroup = socialItems ? (
+      <MainMenu.Group title="Links">{socialItems}</MainMenu.Group>
+    ) : null;
+
+    const socialGroup = renderMainMenuGroup(defaultSocialGroup);
+
+    entries.push({
+      key: "links",
+      node: socialGroup,
+      separatorBefore: !!socialGroup,
+    });
+
+    entries.push({
+      key: "toggleTheme",
+      node:
+        UIOptions.canvasActions.toggleTheme !== false ? (
+          <MainMenu.DefaultItems.ToggleTheme />
+        ) : null,
+      separatorBefore: true,
+    });
+
+    entries.push({
+      key: "changeCanvasBackground",
+      node: <MainMenu.DefaultItems.ChangeCanvasBackground />,
+    });
+
+    return entries;
+  }, [
+    UIOptions.canvasActions.clearCanvas,
+    UIOptions.canvasActions.export,
+    UIOptions.canvasActions.loadScene,
+    UIOptions.canvasActions.saveAsImage,
+    UIOptions.canvasActions.saveToActiveFile,
+    UIOptions.canvasActions.toggleTheme,
+    renderMainMenuGroup,
+    socialLinks,
+  ]);
+
+  const defaultMainMenuItemsMap = React.useMemo(
+    () =>
+      defaultMainMenuEntries.reduce(
+        (acc, entry) => {
+          acc[entry.key] = entry.node;
+          return acc;
+        },
+        {} as Record<MainMenuDefaultItem, React.ReactNode | null>,
+      ),
+    [defaultMainMenuEntries],
+  );
+
+  const defaultMainMenuOrder = React.useMemo(
+    () =>
+      defaultMainMenuEntries.map((entry) => entry.key) as readonly MainMenuDefaultItem[],
+    [defaultMainMenuEntries],
+  );
+
+  const mainMenuNodes: React.ReactNode[] = [];
+  let hasRenderedMainMenuItem = false;
+
+  const toggleThemeVisible = Boolean(
+    defaultMainMenuItemsMap.toggleTheme &&
+      isMainMenuItemEnabled("toggleTheme"),
+  );
+
+  for (const entry of defaultMainMenuEntries) {
+    if (!entry.node) {
+      continue;
+    }
+    if (!isMainMenuItemEnabled(entry.key)) {
+      continue;
+    }
+
+    const needsSeparator =
+      hasRenderedMainMenuItem &&
+      (entry.separatorBefore ||
+        (entry.key === "changeCanvasBackground" && !toggleThemeVisible));
+
+    if (needsSeparator) {
+      mainMenuNodes.push(
+        <MainMenu.Separator key={`${entry.key}-separator`} />,
+      );
+    }
+
+    mainMenuNodes.push(
+      <React.Fragment key={entry.key}>{entry.node}</React.Fragment>,
+    );
+
+    hasRenderedMainMenuItem = true;
+  }
+
+  const defaultMainMenuItemsNode = (
+    <>
+      {mainMenuConfig.prepend}
+      {mainMenuNodes}
+      {mainMenuConfig.append}
+    </>
+  );
 
   const spacing =
     appState.stylesPanelMode === "compact"
@@ -226,16 +384,26 @@ const LayerUI = ({
     );
   };
 
-  const renderCanvasActions = () => (
-    <div style={{ position: "relative" }}>
-      {/* wrapping to Fragment stops React from occasionally complaining
+  const renderCanvasActions = () => {
+    if (!isTopToolbarItemEnabled("canvasActions")) {
+      return null;
+    }
+
+    return (
+      <div style={{ position: "relative" }}>
+        {/* wrapping to Fragment stops React from occasionally complaining
                 about identical Keys */}
-      <tunnels.MainMenuTunnel.Out />
-      {renderWelcomeScreen && <tunnels.WelcomeScreenMenuHintTunnel.Out />}
-    </div>
-  );
+        <tunnels.MainMenuTunnel.Out />
+        {renderWelcomeScreen && <tunnels.WelcomeScreenMenuHintTunnel.Out />}
+      </div>
+    );
+  };
 
   const renderSelectedShapeActions = () => {
+    if (!isTopToolbarItemEnabled("selectedShapeActions")) {
+      return null;
+    }
+
     const isCompactMode = appState.stylesPanelMode === "compact";
 
     return (
@@ -285,19 +453,60 @@ const LayerUI = ({
     );
   };
 
+  const toolbarContextBase: Omit<
+    ToolbarRenderContext,
+    "defaultUI" | "location"
+  > = {
+    appState,
+    actionManager,
+    elements,
+    device,
+    UIOptions,
+    setAppState,
+    app,
+    isCollaborating,
+  };
+
   const renderFixedSideContainer = () => {
-    const shouldRenderSelectedShapeActions = showSelectedShapeActions(
-      appState,
-      elements,
-    );
+    const shouldRenderSelectedShapeActions =
+      isTopToolbarItemEnabled("selectedShapeActions") &&
+      showSelectedShapeActions(appState, elements);
 
     const shouldShowStats =
+      isTopToolbarItemEnabled("stats") &&
       appState.stats.open &&
       !appState.zenModeEnabled &&
       !appState.viewModeEnabled &&
       appState.openDialog?.name !== "elementLinkSelector";
 
-    return (
+    const showHintViewer = isTopToolbarItemEnabled("hintViewer");
+    const showPenModeButton = isTopToolbarItemEnabled("penModeButton");
+    const showLockButton = isTopToolbarItemEnabled("lockButton");
+    const showHandButton = isTopToolbarItemEnabled("handButton");
+    const showShapesSwitcher = isTopToolbarItemEnabled("shapesSwitcher");
+    const showLaserPointerButton = isTopToolbarItemEnabled(
+      "laserPointerButton",
+    );
+    const showCollaboratorList = isTopToolbarItemEnabled("collaboratorList");
+
+    const hasToolbarIslandContent =
+      showHintViewer ||
+      showPenModeButton ||
+      showLockButton ||
+      showHandButton ||
+      showShapesSwitcher;
+
+    const shouldRenderLaserIsland = isCollaborating && showLaserPointerButton;
+
+    const shouldRenderToolbarSection =
+      !appState.viewModeEnabled &&
+      appState.openDialog?.name !== "elementLinkSelector" &&
+      (hasToolbarIslandContent ||
+        shouldRenderLaserIsland ||
+        topToolbarPrepend !== null ||
+        topToolbarAppend !== null);
+
+    const defaultTopToolbar = (
       <FixedSideContainer side="top">
         <div className="App-menu App-menu_top">
           <Stack.Col
@@ -314,21 +523,22 @@ const LayerUI = ({
               {shouldRenderSelectedShapeActions && renderSelectedShapeActions()}
             </div>
           </Stack.Col>
-          {!appState.viewModeEnabled &&
-            appState.openDialog?.name !== "elementLinkSelector" && (
-              <Section heading="shapes" className="shapes-section">
-                {(heading: React.ReactNode) => (
-                  <div style={{ position: "relative" }}>
-                    {renderWelcomeScreen && (
-                      <tunnels.WelcomeScreenToolbarHintTunnel.Out />
-                    )}
-                    <Stack.Col gap={spacing.toolbarColGap} align="start">
-                      <Stack.Row
-                        gap={spacing.toolbarRowGap}
-                        className={clsx("App-toolbar-container", {
-                          "zen-mode": appState.zenModeEnabled,
-                        })}
-                      >
+          {shouldRenderToolbarSection && (
+            <Section heading="shapes" className="shapes-section">
+              {(heading: React.ReactNode) => (
+                <div style={{ position: "relative" }}>
+                  {renderWelcomeScreen && (
+                    <tunnels.WelcomeScreenToolbarHintTunnel.Out />
+                  )}
+                  <Stack.Col gap={spacing.toolbarColGap} align="start">
+                    <Stack.Row
+                      gap={spacing.toolbarRowGap}
+                      className={clsx("App-toolbar-container", {
+                        "zen-mode": appState.zenModeEnabled,
+                      })}
+                    >
+                      {topToolbarPrepend}
+                      {hasToolbarIslandContent && (
                         <Island
                           padding={spacing.islandPadding}
                           className={clsx("App-toolbar", {
@@ -337,70 +547,88 @@ const LayerUI = ({
                               appState.stylesPanelMode === "compact",
                           })}
                         >
-                          <HintViewer
-                            appState={appState}
-                            isMobile={device.editor.isMobile}
-                            device={device}
-                            app={app}
-                          />
-                          {heading}
-                          <Stack.Row gap={spacing.toolbarInnerRowGap}>
-                            <PenModeButton
-                              zenModeEnabled={appState.zenModeEnabled}
-                              checked={appState.penMode}
-                              onChange={() => onPenModeToggle(null)}
-                              title={t("toolBar.penMode")}
-                              penDetected={appState.penDetected}
-                            />
-                            <LockButton
-                              checked={appState.activeTool.locked}
-                              onChange={onLockToggle}
-                              title={t("toolBar.lock")}
-                            />
-
-                            <div className="App-toolbar__divider" />
-
-                            <HandButton
-                              checked={isHandToolActive(appState)}
-                              onChange={() => onHandToolToggle()}
-                              title={t("toolBar.hand")}
-                              isMobile
-                            />
-
-                            <ShapesSwitcher
-                              setAppState={setAppState}
-                              activeTool={appState.activeTool}
-                              UIOptions={UIOptions}
+                          {showHintViewer && (
+                            <HintViewer
+                              appState={appState}
+                              isMobile={device.editor.isMobile}
+                              device={device}
                               app={app}
                             />
+                          )}
+                          {(showPenModeButton ||
+                            showLockButton ||
+                            showHandButton ||
+                            showShapesSwitcher) && heading}
+                          <Stack.Row gap={spacing.toolbarInnerRowGap}>
+                            {showPenModeButton && (
+                              <PenModeButton
+                                zenModeEnabled={appState.zenModeEnabled}
+                                checked={appState.penMode}
+                                onChange={() => onPenModeToggle(null)}
+                                title={t("toolBar.penMode")}
+                                penDetected={appState.penDetected}
+                              />
+                            )}
+                            {showLockButton && (
+                              <LockButton
+                                checked={appState.activeTool.locked}
+                                onChange={onLockToggle}
+                                title={t("toolBar.lock")}
+                              />
+                            )}
+
+                            {((showPenModeButton || showLockButton) &&
+                              (showHandButton || showShapesSwitcher)) && (
+                              <div className="App-toolbar__divider" />
+                            )}
+
+                            {showHandButton && (
+                              <HandButton
+                                checked={isHandToolActive(appState)}
+                                onChange={() => onHandToolToggle()}
+                                title={t("toolBar.hand")}
+                                isMobile
+                              />
+                            )}
+
+                            {showShapesSwitcher && (
+                              <ShapesSwitcher
+                                setAppState={setAppState}
+                                activeTool={appState.activeTool}
+                                UIOptions={UIOptions}
+                                app={app}
+                              />
+                            )}
                           </Stack.Row>
                         </Island>
-                        {isCollaborating && (
-                          <Island
-                            style={{
-                              marginLeft: spacing.collabMarginLeft,
-                              alignSelf: "center",
-                              height: "fit-content",
-                            }}
-                          >
-                            <LaserPointerButton
-                              title={t("toolBar.laser")}
-                              checked={
-                                appState.activeTool.type === TOOL_TYPE.laser
-                              }
-                              onChange={() =>
-                                app.setActiveTool({ type: TOOL_TYPE.laser })
-                              }
-                              isMobile
-                            />
-                          </Island>
-                        )}
-                      </Stack.Row>
-                    </Stack.Col>
-                  </div>
-                )}
-              </Section>
-            )}
+                      )}
+                      {shouldRenderLaserIsland && (
+                        <Island
+                          style={{
+                            marginLeft: spacing.collabMarginLeft,
+                            alignSelf: "center",
+                            height: "fit-content",
+                          }}
+                        >
+                          <LaserPointerButton
+                            title={t("toolBar.laser")}
+                            checked={
+                              appState.activeTool.type === TOOL_TYPE.laser
+                            }
+                            onChange={() =>
+                              app.setActiveTool({ type: TOOL_TYPE.laser })
+                            }
+                            isMobile
+                          />
+                        </Island>
+                      )}
+                      {topToolbarAppend}
+                    </Stack.Row>
+                  </Stack.Col>
+                </div>
+              )}
+            </Section>
+          )}
           <div
             className={clsx(
               "layer-ui__wrapper__top-right zen-mode-transition",
@@ -411,7 +639,7 @@ const LayerUI = ({
               },
             )}
           >
-            {appState.collaborators.size > 0 && (
+            {showCollaboratorList && appState.collaborators.size > 0 && (
               <UserList
                 collaborators={appState.collaborators}
                 userToFollow={appState.userToFollow?.socketId || null}
@@ -438,6 +666,18 @@ const LayerUI = ({
         </div>
       </FixedSideContainer>
     );
+
+    if (!renderTopToolbar) {
+      return defaultTopToolbar;
+    }
+
+    const customTopToolbar = renderTopToolbar({
+      ...toolbarContextBase,
+      location: device.editor.isMobile ? "mobile-top" : "top",
+      defaultUI: defaultTopToolbar,
+    });
+
+    return customTopToolbar ?? defaultTopToolbar;
   };
 
   const renderSidebars = () => {
@@ -457,6 +697,28 @@ const LayerUI = ({
 
   const isSidebarDocked = useAtomValue(isSidebarDockedAtom);
 
+  const mainMenuItemsNode =
+    renderMainMenuItems?.({
+      defaultItems: defaultMainMenuItemsNode,
+      defaultItemOrder,
+      defaultItemNodes: defaultMainMenuItemsMap,
+      appState,
+      actionManager,
+      device,
+      UIOptions,
+    }) ?? defaultMainMenuItemsNode;
+
+  const defaultMainMenuNode = <MainMenu __fallback>{mainMenuItemsNode}</MainMenu>;
+
+  const mainMenuNode =
+    renderMainMenu?.({
+      defaultMenu: defaultMainMenuNode,
+      appState,
+      actionManager,
+      device,
+      UIOptions,
+    }) ?? defaultMainMenuNode;
+
   const layerUIJSX = (
     <>
       {/* ------------------------- tunneled UI ---------------------------- */}
@@ -466,7 +728,7 @@ const LayerUI = ({
       {/* render component fallbacks. Can be rendered anywhere as they'll be
           tunneled away. We only render tunneled components that actually
         have defaults when host do not render anything. */}
-      <DefaultMainMenu UIOptions={UIOptions} />
+      {mainMenuNode}
       <DefaultSidebar.Trigger
         __fallback
         icon={LibraryIcon}
@@ -591,6 +853,11 @@ const LayerUI = ({
           renderSidebars={renderSidebars}
           renderWelcomeScreen={renderWelcomeScreen}
           UIOptions={UIOptions}
+          renderTopToolbar={renderTopToolbar}
+          renderBottomToolbar={renderBottomToolbar}
+          toolbarContext={toolbarContextBase}
+          toolbarTopConfig={mobileTopConfig}
+          toolbarBottomConfig={mobileBottomConfig}
         />
       )}
       {!device.editor.isMobile && (
@@ -607,13 +874,31 @@ const LayerUI = ({
           >
             {renderWelcomeScreen && <tunnels.WelcomeScreenCenterTunnel.Out />}
             {renderFixedSideContainer()}
-            <Footer
-              appState={appState}
-              actionManager={actionManager}
-              showExitZenModeBtn={showExitZenModeBtn}
-              renderWelcomeScreen={renderWelcomeScreen}
-            />
-            {appState.scrolledOutside && (
+            {(() => {
+              const defaultFooter = (
+                <Footer
+                  appState={appState}
+                  actionManager={actionManager}
+                  showExitZenModeBtn={showExitZenModeBtn}
+                  renderWelcomeScreen={renderWelcomeScreen}
+                  config={bottomToolbarConfig}
+                />
+              );
+
+              if (!renderBottomToolbar) {
+                return defaultFooter;
+              }
+
+              const customFooter = renderBottomToolbar({
+                ...toolbarContextBase,
+                location: "bottom",
+                defaultUI: defaultFooter,
+              });
+
+              return customFooter ?? defaultFooter;
+            })()}
+            {appState.scrolledOutside &&
+              isBottomToolbarItemEnabled("scrollToContent") && (
               <button
                 type="button"
                 className="scroll-back-to-content"

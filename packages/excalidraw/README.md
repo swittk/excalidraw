@@ -32,6 +32,34 @@ Excalidraw takes _100%_ of `width` and `height` of the containing block so make 
 
 Go to [CodeSandbox](https://codesandbox.io/p/sandbox/github/excalidraw/excalidraw/tree/master/examples/with-script-in-browser) example.
 
+## Customization
+
+The component now exposes additional props so host applications can fully control the surrounding UI and network integrations:
+
+- `branding` lets you disable the bundled Excalidraw branding or provide your own replacements for the welcome screen logo and the default main menu section.
+- `remoteConfig` centralises all remote endpoints (library browser URLs, publish backend, documentation links, and the font CDN fallback) so they can point to your self-hosted infrastructure.
+- `renderTopToolbar`, `renderBottomToolbar`, `renderMainMenu`, and `renderMainMenuItems` allow you to extend or replace the default toolbars and menu content on both desktop and mobile layouts.
+- `toolbar` toggles individual controls within the default toolbars (desktop and mobile) and lets you prepend or append custom UI without reimplementing the layout.
+- `mainMenu` controls the built-in menu entries so you can hide the stock actions or inject your own items around the defaults.
+
+  ```tsx
+  <Excalidraw
+    toolbar={{
+      top: {
+        items: { penModeButton: false },
+        append: <MyCustomToolbarButton />,
+      },
+    }}
+    mainMenu={{
+      items: { loadScene: false, links: false },
+      append: <MainMenu.Item onSelect={handleAbout}>About</MainMenu.Item>,
+    }}
+  />
+  ```
+- `onTelemetryEvent` exposes the internal action logging so you can wire it to your own analytics pipeline while keeping telemetry disabled by default.
+
+See the API docs for detailed typings and usage examples.
+
 ## Integration
 
 Head over to the [docs](https://docs.excalidraw.com/docs/@excalidraw/excalidraw/integration).

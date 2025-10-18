@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import React from "react";
 
 import { THEME } from "@excalidraw/common";
 
@@ -17,6 +18,8 @@ import { trackEvent } from "../../analytics";
 import { useUIAppState } from "../../context/ui-appState";
 import { useSetAtom } from "../../editor-jotai";
 import { useI18n } from "../../i18n";
+import { useRemoteConfig } from "../../context/RemoteConfigContext";
+import type { LinkCollection } from "../../context/RemoteConfigContext";
 import { activeConfirmDialogAtom } from "../ActiveConfirmDialog";
 import {
   useExcalidrawSetAppState,
@@ -339,34 +342,58 @@ export const Export = () => {
 };
 Export.displayName = "Export";
 
-export const Socials = () => {
+export const Socials = ({ links }: { links?: LinkCollection }) => {
   const { t } = useI18n();
+  const { socialLinks } = useRemoteConfig();
 
-  return (
-    <>
+  const resolvedLinks = links ?? socialLinks;
+
+  const items: React.ReactNode[] = [];
+
+  if (resolvedLinks.github) {
+    items.push(
       <DropdownMenuItemLink
+        key="github"
         icon={GithubIcon}
-        href="https://github.com/excalidraw/excalidraw"
+        href={resolvedLinks.github}
         aria-label="GitHub"
       >
         GitHub
-      </DropdownMenuItemLink>
+      </DropdownMenuItemLink>,
+    );
+  }
+
+  if (resolvedLinks.x) {
+    items.push(
       <DropdownMenuItemLink
+        key="x"
         icon={XBrandIcon}
-        href="https://x.com/excalidraw"
+        href={resolvedLinks.x}
         aria-label="X"
       >
         {t("labels.followUs")}
-      </DropdownMenuItemLink>
+      </DropdownMenuItemLink>,
+    );
+  }
+
+  if (resolvedLinks.discord) {
+    items.push(
       <DropdownMenuItemLink
+        key="discord"
         icon={DiscordIcon}
-        href="https://discord.gg/UexuTaE"
+        href={resolvedLinks.discord}
         aria-label="Discord"
       >
         {t("labels.discordChat")}
-      </DropdownMenuItemLink>
-    </>
-  );
+      </DropdownMenuItemLink>,
+    );
+  }
+
+  if (!items.length) {
+    return null;
+  }
+
+  return <>{items}</>;
 };
 Socials.displayName = "Socials";
 

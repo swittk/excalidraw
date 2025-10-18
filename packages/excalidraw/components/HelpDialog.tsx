@@ -10,51 +10,70 @@ import { t } from "../i18n";
 
 import { Dialog } from "./Dialog";
 import { ExternalLinkIcon, GithubIcon, youtubeIcon } from "./icons";
+import { useRemoteConfig } from "../context/RemoteConfigContext";
 
 import "./HelpDialog.scss";
 
 import type { JSX } from "react";
 
-const Header = () => (
-  <div className="HelpDialog__header">
-    <a
-      className="HelpDialog__btn"
-      href="https://docs.excalidraw.com"
-      target="_blank"
-      rel="noopener"
-    >
-      <div className="HelpDialog__link-icon">{ExternalLinkIcon}</div>
-      {t("helpDialog.documentation")}
-    </a>
-    <a
-      className="HelpDialog__btn"
-      href="https://plus.excalidraw.com/blog"
-      target="_blank"
-      rel="noopener"
-    >
-      <div className="HelpDialog__link-icon">{ExternalLinkIcon}</div>
-      {t("helpDialog.blog")}
-    </a>
-    <a
-      className="HelpDialog__btn"
-      href="https://github.com/excalidraw/excalidraw/issues"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <div className="HelpDialog__link-icon">{GithubIcon}</div>
-      {t("helpDialog.github")}
-    </a>
-    <a
-      className="HelpDialog__btn"
-      href="https://youtube.com/@excalidraw"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <div className="HelpDialog__link-icon">{youtubeIcon}</div>
-      YouTube
-    </a>
-  </div>
-);
+const Header = () => {
+  const { helpLinks } = useRemoteConfig();
+
+  const items = (
+    [
+      helpLinks.documentation && {
+        key: "documentation",
+        href: helpLinks.documentation,
+        label: t("helpDialog.documentation"),
+        icon: ExternalLinkIcon,
+      },
+      helpLinks.blog && {
+        key: "blog",
+        href: helpLinks.blog,
+        label: t("helpDialog.blog"),
+        icon: ExternalLinkIcon,
+      },
+      helpLinks.github && {
+        key: "github",
+        href: helpLinks.github,
+        label: t("helpDialog.github"),
+        icon: GithubIcon,
+      },
+      helpLinks.youtube && {
+        key: "youtube",
+        href: helpLinks.youtube,
+        label: "YouTube",
+        icon: youtubeIcon,
+      },
+    ].filter(Boolean) as {
+      key: string;
+      href: string;
+      label: string;
+      icon: JSX.Element;
+    }[]
+  );
+
+  if (!items.length) {
+    return null;
+  }
+
+  return (
+    <div className="HelpDialog__header">
+      {items.map(({ key, href, label, icon }) => (
+        <a
+          key={key}
+          className="HelpDialog__btn"
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div className="HelpDialog__link-icon">{icon}</div>
+          {label}
+        </a>
+      ))}
+    </div>
+  );
+};
 
 const Section = (props: { title: string; children: React.ReactNode }) => (
   <>

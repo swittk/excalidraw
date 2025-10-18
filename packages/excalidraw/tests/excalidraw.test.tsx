@@ -359,8 +359,8 @@ describe("<Excalidraw/>", () => {
             <MainMenu.Item onSelect={() => window.alert("Clicked")}>
               Click me
             </MainMenu.Item>
-            <MainMenu.ItemLink href="blog.excalidaw.com">
-              Excalidraw blog
+            <MainMenu.ItemLink href="https://example.com/blog">
+              Project blog
             </MainMenu.ItemLink>
             <MainMenu.ItemCustom>
               <button

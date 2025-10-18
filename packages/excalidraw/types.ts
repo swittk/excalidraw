@@ -48,10 +48,17 @@ import type {
   EphemeralIncrement,
 } from "@excalidraw/element";
 
+import type { ActionManager } from "./actions/manager";
 import type { Action } from "./actions/types";
 import type { Spreadsheet } from "./charts";
 import type { ClipboardData } from "./clipboard";
 import type App from "./components/App";
+import type { BrandingConfig } from "./context/BrandingContext";
+import type {
+  RemoteConfig,
+  LibraryUrlValidator,
+} from "./context/RemoteConfigContext";
+import type { TelemetryEvent } from "./analytics";
 import type Library from "./data/library";
 import type { FileSystemHandle } from "./data/filesystem";
 import type { ContextMenuItems } from "./components/ContextMenu";
@@ -632,6 +639,15 @@ export interface ExcalidrawProps {
   aiEnabled?: boolean;
   showDeprecatedFonts?: boolean;
   renderScrollbars?: boolean;
+  branding?: BrandingConfig | boolean;
+  remoteConfig?: RemoteConfig;
+  onTelemetryEvent?: (event: TelemetryEvent) => void;
+  renderTopToolbar?: ToolbarRenderer;
+  renderBottomToolbar?: ToolbarRenderer;
+  renderMainMenu?: MainMenuRenderer;
+  renderMainMenuItems?: MainMenuItemsRenderer;
+  toolbar?: ToolbarConfig;
+  mainMenu?: MainMenuConfig;
 }
 
 export type SceneData = {
@@ -680,15 +696,122 @@ export type UIOptions = Partial<{
   welcomeScreen?: boolean;
 }>;
 
+export type ResolvedCanvasActions = Required<CanvasActions> & {
+  export: ExportOpts;
+};
+
+export type ResolvedUIOptions = Merge<UIOptions, { canvasActions: ResolvedCanvasActions }>;
+
+export type DesktopTopToolbarItem =
+  | "canvasActions"
+  | "selectedShapeActions"
+  | "hintViewer"
+  | "penModeButton"
+  | "lockButton"
+  | "handButton"
+  | "shapesSwitcher"
+  | "laserPointerButton"
+  | "collaboratorList"
+  | "stats";
+
+export type DesktopBottomToolbarItem =
+  | "zoomActions"
+  | "undoRedoActions"
+  | "helpButton"
+  | "exitZenMode"
+  | "scrollToContent";
+
+export type MobileTopToolbarItem = "topLeftUI" | "topRightUI";
+
+export type MobileBottomToolbarItem =
+  | "shapeActions"
+  | "toolbar"
+  | "scrollToContent";
+
+export type ToolbarSlotConfig<Item extends string> = {
+  items?: Partial<Record<Item, boolean>>;
+  prepend?: React.ReactNode;
+  append?: React.ReactNode;
+};
+
+export interface ToolbarConfig {
+  top?: ToolbarSlotConfig<DesktopTopToolbarItem>;
+  bottom?: ToolbarSlotConfig<DesktopBottomToolbarItem>;
+  mobileTop?: ToolbarSlotConfig<MobileTopToolbarItem>;
+  mobileBottom?: ToolbarSlotConfig<MobileBottomToolbarItem>;
+}
+
+export type MainMenuDefaultItem =
+  | "loadScene"
+  | "saveToActiveFile"
+  | "export"
+  | "saveAsImage"
+  | "search"
+  | "help"
+  | "clearCanvas"
+  | "links"
+  | "toggleTheme"
+  | "changeCanvasBackground";
+
+export interface MainMenuConfig {
+  items?: Partial<Record<MainMenuDefaultItem, boolean>>;
+  prepend?: React.ReactNode;
+  append?: React.ReactNode;
+}
+
+export type ToolbarLocation =
+  | "top"
+  | "bottom"
+  | "mobile-top"
+  | "mobile-bottom";
+
+export interface ToolbarRenderContext {
+  location: ToolbarLocation;
+  defaultUI: React.ReactNode;
+  appState: UIAppState;
+  actionManager: ActionManager;
+  elements: readonly NonDeletedExcalidrawElement[];
+  device: Device;
+  UIOptions: ResolvedUIOptions;
+  setAppState: React.Component<any, AppState>["setState"];
+  app: AppClassProperties;
+  isCollaborating: boolean;
+}
+
+export type ToolbarRenderer = (
+  context: ToolbarRenderContext,
+) => React.ReactNode;
+
+export interface MainMenuItemsRenderContext {
+  defaultItems: React.ReactNode;
+  defaultItemOrder: readonly MainMenuDefaultItem[];
+  defaultItemNodes: Record<MainMenuDefaultItem, React.ReactNode | null>;
+  appState: UIAppState;
+  actionManager: ActionManager;
+  device: Device;
+  UIOptions: ResolvedUIOptions;
+}
+
+export type MainMenuItemsRenderer = (
+  context: MainMenuItemsRenderContext,
+) => React.ReactNode;
+
+export interface MainMenuRenderContext {
+  defaultMenu: React.ReactNode;
+  appState: UIAppState;
+  actionManager: ActionManager;
+  device: Device;
+  UIOptions: ResolvedUIOptions;
+}
+
+export type MainMenuRenderer = (
+  context: MainMenuRenderContext,
+) => React.ReactNode;
+
 export type AppProps = Merge<
   ExcalidrawProps,
   {
-    UIOptions: Merge<
-      UIOptions,
-      {
-        canvasActions: Required<CanvasActions> & { export: ExportOpts };
-      }
-    >;
+    UIOptions: ResolvedUIOptions;
     detectScroll: boolean;
     handleKeyboardGlobally: boolean;
     isCollaborating: boolean;
@@ -961,3 +1084,6 @@ export type Offsets = Partial<{
   bottom: number;
   left: number;
 }>;
+
+export type { BrandingConfig } from "./context/BrandingContext";
+export type { RemoteConfig, LinkCollection } from "./context/RemoteConfigContext";

@@ -14,6 +14,7 @@ import {
 import { EditorLocalStorage } from "../data/EditorLocalStorage";
 import { canvasToBlob, resizeImageFile } from "../data/blob";
 import { t } from "../i18n";
+import { useRemoteConfig } from "../context/RemoteConfigContext";
 
 import { Dialog } from "./Dialog";
 import DialogActionButton from "./DialogActionButton";
@@ -231,6 +232,7 @@ const PublishLibrary = ({
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { libraryBackendUrl } = useRemoteConfig();
 
   useEffect(() => {
     const data = EditorLocalStorage.get<PublishLibraryDataParams>(
@@ -299,7 +301,14 @@ const PublishLibrary = ({
     formData.append("twitterHandle", libraryData.twitterHandle);
     formData.append("website", libraryData.website);
 
-    fetch(`${import.meta.env.VITE_APP_LIBRARY_BACKEND}/submit`, {
+    if (!libraryBackendUrl) {
+      const error = new Error("Library backend URL is not configured.");
+      onError(error);
+      setIsSubmitting(false);
+      return;
+    }
+
+    fetch(`${libraryBackendUrl}/submit`, {
       method: "post",
       body: formData,
     })
