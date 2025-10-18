@@ -8,50 +8,70 @@ import { Section } from "../Section";
 import Stack from "../Stack";
 
 import type { ActionManager } from "../../actions/manager";
-import type { UIAppState } from "../../types";
+import type {
+  UIAppState,
+  ToolbarSlotConfig,
+  DesktopBottomToolbarItem,
+} from "../../types";
 
 const Footer = ({
   appState,
   actionManager,
   showExitZenModeBtn,
   renderWelcomeScreen,
+  config,
 }: {
   appState: UIAppState;
   actionManager: ActionManager;
   showExitZenModeBtn: boolean;
   renderWelcomeScreen: boolean;
+  config?: ToolbarSlotConfig<DesktopBottomToolbarItem>;
 }) => {
   const { FooterCenterTunnel, WelcomeScreenHelpHintTunnel } = useTunnels();
+
+  const isItemEnabled = (item: DesktopBottomToolbarItem) =>
+    config?.items?.[item] ?? true;
+
+  const showZoomActions = isItemEnabled("zoomActions");
+  const showUndoRedoActions =
+    isItemEnabled("undoRedoActions") && !appState.viewModeEnabled;
+  const showHelpButton = isItemEnabled("helpButton");
+  const showExitButton = isItemEnabled("exitZenMode") && showExitZenModeBtn;
 
   return (
     <footer
       role="contentinfo"
       className="layer-ui__wrapper__footer App-menu App-menu_bottom"
     >
+      {config?.prepend}
       <div
         className={clsx("layer-ui__wrapper__footer-left zen-mode-transition", {
           "layer-ui__wrapper__footer-left--transition-left":
             appState.zenModeEnabled,
         })}
       >
-        <Stack.Col gap={2}>
-          <Section heading="canvasActions">
-            <ZoomActions
-              renderAction={actionManager.renderAction}
-              zoom={appState.zoom}
-            />
+        {(showZoomActions || showUndoRedoActions) && (
+          <Stack.Col gap={2}>
+            <Section heading="canvasActions">
+              {showZoomActions && (
+                <ZoomActions
+                  renderAction={actionManager.renderAction}
+                  zoom={appState.zoom}
+                />
+              )}
 
-            {!appState.viewModeEnabled && (
-              <UndoRedoActions
-                renderAction={actionManager.renderAction}
-                className={clsx("zen-mode-transition", {
-                  "layer-ui__wrapper__footer-left--transition-bottom":
-                    appState.zenModeEnabled,
-                })}
-              />
-            )}
-          </Section>
-        </Stack.Col>
+              {showUndoRedoActions && (
+                <UndoRedoActions
+                  renderAction={actionManager.renderAction}
+                  className={clsx("zen-mode-transition", {
+                    "layer-ui__wrapper__footer-left--transition-bottom":
+                      appState.zenModeEnabled,
+                  })}
+                />
+              )}
+            </Section>
+          </Stack.Col>
+        )}
       </div>
       <FooterCenterTunnel.Out />
       <div
@@ -59,17 +79,24 @@ const Footer = ({
           "transition-right": appState.zenModeEnabled,
         })}
       >
-        <div style={{ position: "relative" }}>
-          {renderWelcomeScreen && <WelcomeScreenHelpHintTunnel.Out />}
-          <HelpButton
-            onClick={() => actionManager.executeAction(actionShortcuts)}
-          />
-        </div>
+        {(renderWelcomeScreen || showHelpButton) && (
+          <div style={{ position: "relative" }}>
+            {renderWelcomeScreen && <WelcomeScreenHelpHintTunnel.Out />}
+            {showHelpButton && (
+              <HelpButton
+                onClick={() => actionManager.executeAction(actionShortcuts)}
+              />
+            )}
+          </div>
+        )}
       </div>
-      <ExitZenModeAction
-        actionManager={actionManager}
-        showExitZenModeBtn={showExitZenModeBtn}
-      />
+      {config?.append}
+      {showExitButton && (
+        <ExitZenModeAction
+          actionManager={actionManager}
+          showExitZenModeBtn={showExitButton}
+        />
+      )}
     </footer>
   );
 };

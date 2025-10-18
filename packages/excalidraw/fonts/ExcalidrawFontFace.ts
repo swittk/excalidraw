@@ -8,11 +8,25 @@ export class ExcalidrawFontFace {
   public readonly urls: URL[] | DataURL[];
   public readonly fontFace: FontFace;
 
-  private static readonly ASSETS_FALLBACK_URL = `https://esm.sh/${
+  private static readonly DEFAULT_ASSETS_FALLBACK_URL = `https://esm.sh/${
     import.meta.env.PKG_NAME
       ? `${import.meta.env.PKG_NAME}@${import.meta.env.PKG_VERSION}` // is provided during package build
       : "@excalidraw/excalidraw" // fallback to the latest package version (i.e. for app)
   }/dist/prod/`;
+
+  private static assetsFallbackUrlOverride: string | null | undefined;
+
+  public static setAssetsFallbackUrl(url: string | null | undefined) {
+    ExcalidrawFontFace.assetsFallbackUrlOverride = url;
+  }
+
+  private static getAssetsFallbackUrl() {
+    if (ExcalidrawFontFace.assetsFallbackUrlOverride === undefined) {
+      return ExcalidrawFontFace.DEFAULT_ASSETS_FALLBACK_URL;
+    }
+
+    return ExcalidrawFontFace.assetsFallbackUrlOverride;
+  }
 
   constructor(family: string, uri: string, descriptors?: FontFaceDescriptors) {
     this.urls = ExcalidrawFontFace.createUrls(uri);
@@ -164,7 +178,10 @@ export class ExcalidrawFontFace {
     }
 
     // fallback url for bundled fonts
-    urls.push(new URL(assetUrl, ExcalidrawFontFace.ASSETS_FALLBACK_URL));
+    const fallbackUrl = ExcalidrawFontFace.getAssetsFallbackUrl();
+    if (fallbackUrl) {
+      urls.push(new URL(assetUrl, fallbackUrl));
+    }
 
     return urls;
   }

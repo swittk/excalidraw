@@ -1,6 +1,8 @@
 import Trans from "./Trans";
+import { useRemoteConfig } from "../context/RemoteConfigContext";
 
 const BraveMeasureTextError = () => {
+  const { helpLinks, socialLinks } = useRemoteConfig();
   return (
     <div data-testid="brave-measure-text-error">
       <p>
@@ -18,22 +20,24 @@ const BraveMeasureTextError = () => {
       <p>
         <Trans
           i18nKey="errors.brave_measure_text_error.line3"
-          link={(el) => (
-            <a href="http://docs.excalidraw.com/docs/@excalidraw/excalidraw/faq#turning-off-aggresive-block-fingerprinting-in-brave-browser">
-              {el}
-            </a>
-          )}
+          link={(el) =>
+            helpLinks.documentation ? (
+              <a href={helpLinks.documentation}>{el}</a>
+            ) : (
+              el
+            )
+          }
         />
       </p>
       <p>
         <Trans
           i18nKey="errors.brave_measure_text_error.line4"
-          issueLink={(el) => (
-            <a href="https://github.com/excalidraw/excalidraw/issues/new">
-              {el}
-            </a>
-          )}
-          discordLink={(el) => <a href="https://discord.gg/UexuTaE">{el}.</a>}
+          issueLink={(el) =>
+            helpLinks.github ? <a href={helpLinks.github}>{el}</a> : el
+          }
+          discordLink={(el) =>
+            socialLinks.discord ? <a href={socialLinks.discord}>{el}.</a> : el
+          }
         />
       </p>
     </div>

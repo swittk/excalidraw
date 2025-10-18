@@ -6,6 +6,7 @@ import { t, useI18n } from "../../i18n";
 import { useDevice, useExcalidrawActionManager } from "../App";
 import { ExcalidrawLogo } from "../ExcalidrawLogo";
 import { HelpIcon, LoadIcon, usersIcon } from "../icons";
+import { useBranding } from "../../context/BrandingContext";
 
 import type { JSX } from "react";
 
@@ -110,9 +111,16 @@ const Center = ({ children }: { children?: React.ReactNode }) => {
 Center.displayName = "Center";
 
 const Logo = ({ children }: { children?: React.ReactNode }) => {
+  const { renderWelcomeScreenLogo } = useBranding();
+  const logo = renderWelcomeScreenLogo(children ?? <ExcalidrawLogo withText />);
+
+  if (!logo) {
+    return null;
+  }
+
   return (
     <div className="welcome-screen-center__logo excalifont welcome-screen-decor">
-      {children || <ExcalidrawLogo withText />}
+      {logo}
     </div>
   );
 };

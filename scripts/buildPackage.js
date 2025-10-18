@@ -75,6 +75,17 @@ const createESMRawBuild = async () => {
   });
 };
 
+const createCJSBuild = async () => {
+  await buildProd({
+    ...getConfig("dist/cjs"),
+    entryPoints: ["index.tsx"],
+    splitting: false,
+    format: "cjs",
+    outExtension: { ".js": ".cjs" },
+  });
+};
+
 (async () => {
   await createESMRawBuild();
+  await createCJSBuild();
 })();

@@ -1611,6 +1611,12 @@ class App extends React.Component<AppProps, AppState> {
                           renderTopLeftUI={renderTopLeftUI}
                           renderTopRightUI={renderTopRightUI}
                           renderCustomStats={renderCustomStats}
+                          renderTopToolbar={this.props.renderTopToolbar}
+                          renderBottomToolbar={this.props.renderBottomToolbar}
+                          renderMainMenu={this.props.renderMainMenu}
+                          renderMainMenuItems={this.props.renderMainMenuItems}
+                          toolbar={this.props.toolbar}
+                          mainMenu={this.props.mainMenu}
                           showExitZenModeBtn={
                             typeof this.props?.zenModeEnabled === "undefined" &&
                             this.state.zenModeEnabled

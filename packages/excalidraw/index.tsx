@@ -11,6 +11,11 @@ import WelcomeScreen from "./components/welcome-screen/WelcomeScreen";
 import { defaultLang } from "./i18n";
 import { EditorJotaiProvider, editorJotaiStore } from "./editor-jotai";
 import polyfill from "./polyfill";
+import { BrandingProvider } from "./context/BrandingContext";
+import { RemoteConfigProvider } from "./context/RemoteConfigContext";
+import { setTelemetryHandler } from "./analytics";
+import { ExcalidrawFontFace } from "./fonts/ExcalidrawFontFace";
+import { setLibraryUrlValidator } from "./data/library";
 
 import "./css/app.scss";
 import "./css/styles.scss";
@@ -56,6 +61,15 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     aiEnabled,
     showDeprecatedFonts,
     renderScrollbars,
+    branding,
+    remoteConfig,
+    onTelemetryEvent,
+    renderTopToolbar,
+    renderBottomToolbar,
+    renderMainMenu,
+    renderMainMenuItems,
+    toolbar,
+    mainMenu,
   } = props;
 
   const canvasActions = props.UIOptions?.canvasActions;
@@ -111,48 +125,94 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    setTelemetryHandler(onTelemetryEvent ?? null);
+    return () => {
+      setTelemetryHandler(null);
+    };
+  }, [onTelemetryEvent]);
+
+  useEffect(() => {
+    ExcalidrawFontFace.setAssetsFallbackUrl(remoteConfig?.assetFallbackUrl);
+
+    const libraryValidator = remoteConfig?.libraryUrlValidator
+      ? remoteConfig.libraryUrlValidator
+      : remoteConfig?.libraryUrl
+        ? (() => {
+            try {
+              const url = new URL(remoteConfig.libraryUrl);
+              const pathname = url.pathname.replace(/\/+$/, "");
+              return [`${url.hostname}${pathname ? `${pathname}` : ""}`];
+            } catch {
+              return undefined;
+            }
+          })()
+        : undefined;
+
+    setLibraryUrlValidator(libraryValidator);
+
+    return () => {
+      ExcalidrawFontFace.setAssetsFallbackUrl(undefined);
+      setLibraryUrlValidator(undefined);
+    };
+  }, [
+    remoteConfig?.assetFallbackUrl,
+    remoteConfig?.libraryUrlValidator,
+    remoteConfig?.libraryUrl,
+  ]);
+
   return (
     <EditorJotaiProvider store={editorJotaiStore}>
-      <InitializeApp langCode={langCode} theme={theme}>
-        <App
-          onChange={onChange}
-          onIncrement={onIncrement}
-          initialData={initialData}
-          excalidrawAPI={excalidrawAPI}
-          isCollaborating={isCollaborating}
-          onPointerUpdate={onPointerUpdate}
-          renderTopLeftUI={renderTopLeftUI}
-          renderTopRightUI={renderTopRightUI}
-          langCode={langCode}
-          viewModeEnabled={viewModeEnabled}
-          zenModeEnabled={zenModeEnabled}
-          gridModeEnabled={gridModeEnabled}
-          libraryReturnUrl={libraryReturnUrl}
-          theme={theme}
-          name={name}
-          renderCustomStats={renderCustomStats}
-          UIOptions={UIOptions}
-          onPaste={onPaste}
-          detectScroll={detectScroll}
-          handleKeyboardGlobally={handleKeyboardGlobally}
-          onLibraryChange={onLibraryChange}
-          autoFocus={autoFocus}
-          generateIdForFile={generateIdForFile}
-          onLinkOpen={onLinkOpen}
-          generateLinkForSelection={generateLinkForSelection}
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
-          onScrollChange={onScrollChange}
-          onDuplicate={onDuplicate}
-          validateEmbeddable={validateEmbeddable}
-          renderEmbeddable={renderEmbeddable}
-          aiEnabled={aiEnabled !== false}
-          showDeprecatedFonts={showDeprecatedFonts}
-          renderScrollbars={renderScrollbars}
-        >
-          {children}
-        </App>
-      </InitializeApp>
+      <BrandingProvider value={branding}>
+        <RemoteConfigProvider value={remoteConfig}>
+          <InitializeApp langCode={langCode} theme={theme}>
+            <App
+              onChange={onChange}
+              onIncrement={onIncrement}
+              initialData={initialData}
+              excalidrawAPI={excalidrawAPI}
+              isCollaborating={isCollaborating}
+              onPointerUpdate={onPointerUpdate}
+              renderTopLeftUI={renderTopLeftUI}
+              renderTopRightUI={renderTopRightUI}
+              langCode={langCode}
+              viewModeEnabled={viewModeEnabled}
+              zenModeEnabled={zenModeEnabled}
+              gridModeEnabled={gridModeEnabled}
+              libraryReturnUrl={libraryReturnUrl}
+              theme={theme}
+              name={name}
+              renderCustomStats={renderCustomStats}
+              UIOptions={UIOptions}
+              onPaste={onPaste}
+              detectScroll={detectScroll}
+              handleKeyboardGlobally={handleKeyboardGlobally}
+              onLibraryChange={onLibraryChange}
+              autoFocus={autoFocus}
+              generateIdForFile={generateIdForFile}
+              onLinkOpen={onLinkOpen}
+              generateLinkForSelection={generateLinkForSelection}
+              onPointerDown={onPointerDown}
+              onPointerUp={onPointerUp}
+              onScrollChange={onScrollChange}
+              onDuplicate={onDuplicate}
+              validateEmbeddable={validateEmbeddable}
+              renderEmbeddable={renderEmbeddable}
+              aiEnabled={aiEnabled !== false}
+              showDeprecatedFonts={showDeprecatedFonts}
+              renderScrollbars={renderScrollbars}
+              renderTopToolbar={renderTopToolbar}
+              renderBottomToolbar={renderBottomToolbar}
+              renderMainMenu={renderMainMenu}
+              renderMainMenuItems={renderMainMenuItems}
+              toolbar={toolbar}
+              mainMenu={mainMenu}
+            >
+              {children}
+            </App>
+          </InitializeApp>
+        </RemoteConfigProvider>
+      </BrandingProvider>
     </EditorJotaiProvider>
   );
 };
@@ -309,3 +369,14 @@ export { getDataURL } from "./data/blob";
 export { isElementLink } from "@excalidraw/element";
 
 export { setCustomTextMetricsProvider } from "@excalidraw/element";
+
+export type {
+  ExcalidrawProps,
+  ToolbarRenderer,
+  ToolbarRenderContext,
+  MainMenuRenderer,
+  MainMenuItemsRenderer,
+  BrandingConfig,
+  RemoteConfig,
+  LinkCollection,
+} from "./types";
