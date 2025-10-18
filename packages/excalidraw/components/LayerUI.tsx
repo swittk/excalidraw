@@ -274,7 +274,7 @@ const LayerUI = ({
     [defaultMainMenuEntries],
   );
 
-  const defaultMainMenuOrder = React.useMemo(
+  const defaultItemOrder = React.useMemo(
     () =>
       defaultMainMenuEntries.map((entry) => entry.key) as readonly MainMenuDefaultItem[],
     [defaultMainMenuEntries],
