@@ -1,4 +1,4 @@
-import rough from "roughjs/bin/rough";
+import rough from "roughjs";
 import { getStroke } from "perfect-freehand";
 
 import {

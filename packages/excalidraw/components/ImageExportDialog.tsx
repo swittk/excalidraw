@@ -40,8 +40,23 @@ import type { ActionManager } from "../actions/manager";
 
 import type { AppClassProperties, BinaryFiles, UIAppState } from "../types";
 
-const supportsContextFilters =
-  "filter" in document.createElement("canvas").getContext("2d")!;
+let cachedSupportsContextFilters: boolean | null = null;
+
+const supportsContextFilters = (): boolean => {
+  if (cachedSupportsContextFilters !== null) {
+    return cachedSupportsContextFilters;
+  }
+
+  if (typeof document === "undefined") {
+    cachedSupportsContextFilters = false;
+    return cachedSupportsContextFilters;
+  }
+
+  const context = document.createElement("canvas").getContext("2d");
+
+  cachedSupportsContextFilters = !!context && "filter" in context;
+  return cachedSupportsContextFilters;
+};
 
 export const ErrorCanvasPreview = () => {
   return (
@@ -230,7 +245,7 @@ const ImageExportModal = ({
             }}
           />
         </ExportSetting>
-        {supportsContextFilters && (
+        {supportsContextFilters() && (
           <ExportSetting
             label={t("imageExportDialog.label.darkMode")}
             name="exportDarkModeSwitch"
@@ -310,7 +325,7 @@ const ImageExportModal = ({
           >
             {t("imageExportDialog.button.exportToSvg")}
           </FilledButton>
-          {(probablySupportsClipboardBlob || isFirefox) && (
+          {(probablySupportsClipboardBlob() || isFirefox) && (
             <FilledButton
               className="ImageExportModal__settings__buttons__button"
               label={t("imageExportDialog.title.copyPngToClipboard")}

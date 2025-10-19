@@ -23,7 +23,7 @@ import {
   LINE_POLYGON_POINT_MERGE_DISTANCE,
 } from "ex-excalidraw-common";
 
-import { RoughGenerator } from "roughjs/bin/generator";
+import rough from "roughjs";
 
 import type { GlobalPoint } from "ex-excalidraw-math";
 
@@ -75,8 +75,10 @@ import type {
 import type { Drawable, Options } from "roughjs/bin/core";
 import type { Point as RoughPoint } from "roughjs/bin/geometry";
 
+type RoughGeneratorInstance = ReturnType<typeof rough.generator>;
+
 export class ShapeCache {
-  private static rg = new RoughGenerator();
+  private static rg = rough.generator();
   private static cache = new WeakMap<ExcalidrawElement, ElementShape>();
 
   /**
@@ -281,7 +283,7 @@ const getArrowheadShapes = (
   shape: Drawable[],
   position: "start" | "end",
   arrowhead: Arrowhead,
-  generator: RoughGenerator,
+  generator: RoughGeneratorInstance,
   options: Options,
   canvasBackgroundColor: string,
 ) => {
@@ -422,7 +424,7 @@ const getArrowheadShapes = (
 export const generateLinearCollisionShape = (
   element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement,
 ) => {
-  const generator = new RoughGenerator();
+  const generator = rough.generator();
   const options: Options = {
     seed: element.seed,
     disableMultiStroke: true,
@@ -604,7 +606,7 @@ export const generateLinearCollisionShape = (
  */
 const generateElementShape = (
   element: Exclude<NonDeletedExcalidrawElement, ExcalidrawSelectionElement>,
-  generator: RoughGenerator,
+  generator: RoughGeneratorInstance,
   {
     isExporting,
     canvasBackgroundColor,

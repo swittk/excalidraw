@@ -6,31 +6,39 @@ import type { AppProps, AppState } from "ex-excalidraw/types";
 
 import { COLOR_PALETTE } from "./colors";
 
-export const isDarwin = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
-export const isWindows = /^Win/.test(navigator.platform);
-export const isAndroid = /\b(android)\b/i.test(navigator.userAgent);
+const navigatorRef =
+  typeof navigator !== "undefined" ? navigator : undefined;
+const navigatorPlatform = navigatorRef?.platform ?? "";
+const navigatorUserAgent = navigatorRef?.userAgent ?? "";
+const documentRef = typeof document !== "undefined" ? document : undefined;
+
+export const isDarwin = /Mac|iPod|iPhone|iPad/.test(navigatorPlatform);
+export const isWindows = /^Win/.test(navigatorPlatform);
+export const isAndroid = /\b(android)\b/i.test(navigatorUserAgent);
 export const isFirefox =
   typeof window !== "undefined" &&
   "netscape" in window &&
-  navigator.userAgent.indexOf("rv:") > 1 &&
-  navigator.userAgent.indexOf("Gecko") > 1;
-export const isChrome = navigator.userAgent.indexOf("Chrome") !== -1;
+  navigatorUserAgent.indexOf("rv:") > 1 &&
+  navigatorUserAgent.indexOf("Gecko") > 1;
+export const isChrome = navigatorUserAgent.indexOf("Chrome") !== -1;
 export const isSafari =
-  !isChrome && navigator.userAgent.indexOf("Safari") !== -1;
+  !isChrome && navigatorUserAgent.indexOf("Safari") !== -1;
 export const isIOS =
-  /iPad|iPhone/i.test(navigator.platform) ||
+  /iPad|iPhone/i.test(navigatorPlatform) ||
   // iPadOS 13+
-  (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+  (navigatorUserAgent.includes("Mac") &&
+    (documentRef ? "ontouchend" in documentRef : false));
 // keeping function so it can be mocked in test
 export const isBrave = () =>
-  (navigator as any).brave?.isBrave?.name === "isBrave";
+  !!navigatorRef &&
+  (navigatorRef as any).brave?.isBrave?.name === "isBrave";
 
 export const isMobile =
   isIOS ||
   /android|webos|ipod|blackberry|iemobile|opera mini/i.test(
-    navigator.userAgent,
+    navigatorUserAgent,
   ) ||
-  /android|ios|ipod|blackberry|windows phone/i.test(navigator.platform);
+  /android|ios|ipod|blackberry|windows phone/i.test(navigatorPlatform);
 
 export const supportsResizeObserver =
   typeof window !== "undefined" && "ResizeObserver" in window;

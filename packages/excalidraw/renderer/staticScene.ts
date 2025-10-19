@@ -24,8 +24,8 @@ import type {
 } from "ex-excalidraw-element/types";
 
 import {
-  EXTERNAL_LINK_IMG,
-  ELEMENT_LINK_IMG,
+  getElementLinkImage,
+  getExternalLinkImage,
   getLinkHandleFromCoords,
 } from "../components/hyperlink/helpers";
 
@@ -191,16 +191,13 @@ const renderLinkIcon = (
       linkCanvasCacheContext.fillStyle = appState.viewBackgroundColor || "#fff";
       linkCanvasCacheContext.fillRect(0, 0, width, height);
 
-      if (canvasKey === "elementLink") {
-        linkCanvasCacheContext.drawImage(ELEMENT_LINK_IMG, 0, 0, width, height);
-      } else {
-        linkCanvasCacheContext.drawImage(
-          EXTERNAL_LINK_IMG,
-          0,
-          0,
-          width,
-          height,
-        );
+      const linkImage =
+        canvasKey === "elementLink"
+          ? getElementLinkImage()
+          : getExternalLinkImage();
+
+      if (linkImage) {
+        linkCanvasCacheContext.drawImage(linkImage, 0, 0, width, height);
       }
 
       linkCanvasCacheContext.restore();

@@ -65,17 +65,38 @@ type ParsedClipboardEventTextData =
   | { type: "text"; value: string }
   | { type: "mixedContent"; value: PastedMixedContent };
 
-export const probablySupportsClipboardReadText =
-  "clipboard" in navigator && "readText" in navigator.clipboard;
+const getNavigatorClipboard = () =>
+  typeof navigator !== "undefined" && "clipboard" in navigator
+    ? navigator.clipboard
+    : undefined;
 
-export const probablySupportsClipboardWriteText =
-  "clipboard" in navigator && "writeText" in navigator.clipboard;
+const hasClipboardItemConstructor = () =>
+  typeof window !== "undefined" && "ClipboardItem" in window;
 
-export const probablySupportsClipboardBlob =
-  "clipboard" in navigator &&
-  "write" in navigator.clipboard &&
-  "ClipboardItem" in window &&
+const hasCanvasToBlob = () =>
+  typeof HTMLCanvasElement !== "undefined" &&
+  "prototype" in HTMLCanvasElement &&
   "toBlob" in HTMLCanvasElement.prototype;
+
+export const probablySupportsClipboardReadText = () => {
+  const clipboard = getNavigatorClipboard();
+  return !!clipboard && "readText" in clipboard;
+};
+
+export const probablySupportsClipboardWriteText = () => {
+  const clipboard = getNavigatorClipboard();
+  return !!clipboard && "writeText" in clipboard;
+};
+
+export const probablySupportsClipboardBlob = () => {
+  const clipboard = getNavigatorClipboard();
+  return (
+    !!clipboard &&
+    "write" in clipboard &&
+    hasClipboardItemConstructor() &&
+    hasCanvasToBlob()
+  );
+};
 
 const clipboardContainsElements = (
   contents: any,
@@ -592,7 +613,7 @@ export const copyTextToSystemClipboard = async (
   clipboardEvent?: ClipboardEvent | null,
 ) => {
   // (1) first try using Async Clipboard API
-  if (probablySupportsClipboardWriteText) {
+  if (probablySupportsClipboardWriteText()) {
     try {
       // NOTE: doesn't work on FF on non-HTTPS domains, or when document
       // not focused

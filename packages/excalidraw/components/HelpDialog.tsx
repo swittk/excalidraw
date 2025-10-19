@@ -408,7 +408,7 @@ export const HelpDialog = ({ onClose }: { onClose?: () => void }) => {
             />
             {/* firefox supports clipboard API under a flag, so we'll
                 show users what they can do in the error message */}
-            {(probablySupportsClipboardBlob || isFirefox) && (
+            {(probablySupportsClipboardBlob() || isFirefox) && (
               <Shortcut
                 label={t("labels.copyAsPng")}
                 shortcuts={[getShortcutKey("Shift+Alt+C")]}

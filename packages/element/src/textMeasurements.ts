@@ -119,10 +119,11 @@ export interface TextMetricsProvider {
 }
 
 class CanvasTextMetricsProvider implements TextMetricsProvider {
-  private canvas: HTMLCanvasElement;
+  private canvas: HTMLCanvasElement | null;
 
   constructor() {
-    this.canvas = document.createElement("canvas");
+    this.canvas =
+      typeof document !== "undefined" ? document.createElement("canvas") : null;
   }
 
   /**
@@ -133,14 +134,22 @@ class CanvasTextMetricsProvider implements TextMetricsProvider {
    * > The advance width is the distance between the glyph's initial pen position and the next glyph's initial pen position.
    */
   public getLineWidth(text: string, fontString: FontString): number {
-    const context = this.canvas.getContext("2d")!;
+    if (!this.canvas) {
+      return text.length * 10;
+    }
+
+    const context = this.canvas.getContext("2d");
+    if (!context) {
+      return text.length * 10;
+    }
+
     context.font = fontString;
     const metrics = context.measureText(text);
     const advanceWidth = metrics.width;
 
     // since in test env the canvas measureText algo
     // doesn't measure text and instead just returns number of
-    // characters hence we assume that each letteris 10px
+    // characters hence we assume that each letter is 10px
     if (isTestEnv()) {
       return advanceWidth * 10;
     }
@@ -150,6 +159,10 @@ class CanvasTextMetricsProvider implements TextMetricsProvider {
 }
 
 export const getLineWidth = (text: string, font: FontString) => {
+  if (typeof document === "undefined") {
+    return text.length * 10;
+  }
+
   if (!textMetricsProvider) {
     textMetricsProvider = new CanvasTextMetricsProvider();
   }
