@@ -5,11 +5,8 @@ const { sassPlugin } = require("esbuild-sass-plugin");
 
 const { woff2ServerPlugin } = require("./woff2/woff2-esbuild-plugins");
 
-// contains all dependencies bundled inside
-const getConfig = (outdir) => ({
-  outdir,
+const BASE_CONFIG = {
   bundle: true,
-  format: "esm",
   entryPoints: ["src/index.ts"],
   entryNames: "[name]",
   assetNames: "[dir]/[name]",
@@ -20,11 +17,16 @@ const getConfig = (outdir) => ({
     "ex-excalidraw-math": path.resolve(__dirname, "../packages/math/src"),
     "ex-excalidraw-utils": path.resolve(__dirname, "../packages/utils/src"),
   },
-});
+  loader: {
+    ".woff2": "file",
+  },
+};
 
-function buildDev(config) {
+function buildDev(outdir) {
   return build({
-    ...config,
+    ...BASE_CONFIG,
+    format: "esm",
+    outdir,
     sourcemap: true,
     plugins: [sassPlugin(), woff2ServerPlugin()],
     define: {
@@ -33,14 +35,16 @@ function buildDev(config) {
   });
 }
 
-function buildProd(config) {
+function buildProd(outdir) {
   return build({
-    ...config,
+    ...BASE_CONFIG,
+    format: "esm",
+    outdir,
     minify: true,
     plugins: [
       sassPlugin(),
       woff2ServerPlugin({
-        outdir: `${config.outdir}/assets`,
+        outdir: `${outdir}/assets`,
       }),
     ],
     define: {
@@ -49,14 +53,38 @@ function buildProd(config) {
   });
 }
 
+function buildCJS(outdir) {
+  return build({
+    ...BASE_CONFIG,
+    format: "cjs",
+    outdir,
+    minify: true,
+    plugins: [
+      sassPlugin(),
+      woff2ServerPlugin({
+        outdir: `${outdir}/assets`,
+      }),
+    ],
+    define: {
+      "import.meta.env": JSON.stringify({ PROD: true }),
+    },
+    outExtension: { ".js": ".cjs" },
+  });
+}
+
 const createESMRawBuild = async () => {
   // development unminified build with source maps
-  await buildDev(getConfig("dist/dev"));
+  await buildDev("dist/dev");
 
   // production minified build without sourcemaps
-  await buildProd(getConfig("dist/prod"));
+  await buildProd("dist/prod");
+};
+
+const createCJSBuild = async () => {
+  await buildCJS("dist/cjs");
 };
 
 (async () => {
   await createESMRawBuild();
+  await createCJSBuild();
 })();

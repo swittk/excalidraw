@@ -2,11 +2,8 @@ const path = require("path");
 
 const { build } = require("esbuild");
 
-// contains all dependencies bundled inside
-const getConfig = (outdir) => ({
-  outdir,
+const BASE_CONFIG = {
   bundle: true,
-  format: "esm",
   entryPoints: ["src/index.ts"],
   entryNames: "[name]",
   assetNames: "[dir]/[name]",
@@ -14,11 +11,13 @@ const getConfig = (outdir) => ({
     "ex-excalidraw-utils": path.resolve(__dirname, "../packages/utils/src"),
   },
   external: ["ex-excalidraw-common", "ex-excalidraw-element", "ex-excalidraw-math"],
-});
+};
 
-function buildDev(config) {
+function buildDev(outdir) {
   return build({
-    ...config,
+    ...BASE_CONFIG,
+    format: "esm",
+    outdir,
     sourcemap: true,
     define: {
       "import.meta.env": JSON.stringify({ DEV: true }),
@@ -26,9 +25,11 @@ function buildDev(config) {
   });
 }
 
-function buildProd(config) {
+function buildProd(outdir) {
   return build({
-    ...config,
+    ...BASE_CONFIG,
+    format: "esm",
+    outdir,
     minify: true,
     define: {
       "import.meta.env": JSON.stringify({ PROD: true }),
@@ -36,14 +37,32 @@ function buildProd(config) {
   });
 }
 
+function buildCJS(outdir) {
+  return build({
+    ...BASE_CONFIG,
+    format: "cjs",
+    outdir,
+    minify: true,
+    define: {
+      "import.meta.env": JSON.stringify({ PROD: true }),
+    },
+    outExtension: { ".js": ".cjs" },
+  });
+}
+
 const createESMRawBuild = async () => {
   // development unminified build with source maps
-  await buildDev(getConfig("dist/dev"));
+  await buildDev("dist/dev");
 
   // production minified build without sourcemaps
-  await buildProd(getConfig("dist/prod"));
+  await buildProd("dist/prod");
+};
+
+const createCJSBuild = async () => {
+  await buildCJS("dist/cjs");
 };
 
 (async () => {
   await createESMRawBuild();
+  await createCJSBuild();
 })();
