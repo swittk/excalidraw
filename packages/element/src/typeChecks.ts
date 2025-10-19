@@ -1,10 +1,10 @@
-import { ROUNDNESS, assertNever } from "@excalidraw/common";
+import { ROUNDNESS, assertNever } from "ex-excalidraw-common";
 
-import { pointsEqual } from "@excalidraw/math";
+import { pointsEqual } from "ex-excalidraw-math";
 
-import type { ElementOrToolType } from "@excalidraw/excalidraw/types";
+import type { ElementOrToolType } from "ex-excalidraw/types";
 
-import type { MarkNonNullable } from "@excalidraw/common/utility-types";
+import type { MarkNonNullable } from "ex-excalidraw-common/utility-types";
 
 import type { Bounds } from "./bounds";
 import type {
@@ -367,7 +367,7 @@ export const isFixedPointBinding = (
   );
 };
 
-// TODO: Move this to @excalidraw/math
+// TODO: Move this to ex-excalidraw-math
 export const isBounds = (box: unknown): box is Bounds =>
   Array.isArray(box) &&
   box.length === 4 &&

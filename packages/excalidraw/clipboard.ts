@@ -6,24 +6,24 @@ import {
   isMemberOf,
   isPromiseLike,
   EVENT,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { mutateElement } from "@excalidraw/element";
-import { deepCopyElement } from "@excalidraw/element";
+import { mutateElement } from "ex-excalidraw-element";
+import { deepCopyElement } from "ex-excalidraw-element";
 import {
   isFrameLikeElement,
   isInitializedImageElement,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { getContainingFrame } from "@excalidraw/element";
+import { getContainingFrame } from "ex-excalidraw-element";
 
-import type { ValueOf } from "@excalidraw/common/utility-types";
+import type { ValueOf } from "ex-excalidraw-common/utility-types";
 
-import type { IMAGE_MIME_TYPES, STRING_MIME_TYPES } from "@excalidraw/common";
+import type { IMAGE_MIME_TYPES, STRING_MIME_TYPES } from "ex-excalidraw-common";
 import type {
   ExcalidrawElement,
   NonDeletedExcalidrawElement,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import { ExcalidrawError } from "./errors";
 import {

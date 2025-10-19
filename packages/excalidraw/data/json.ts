@@ -4,14 +4,14 @@ import {
   getExportSource,
   MIME_TYPES,
   VERSIONS,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import {
   clearElementsForDatabase,
   clearElementsForExport,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "ex-excalidraw-element/types";
 
 import { cleanAppStateForExport, clearAppStateForDatabase } from "../appState";
 

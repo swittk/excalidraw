@@ -1,11 +1,11 @@
-import { syncInvalidIndices } from "@excalidraw/element";
+import { syncInvalidIndices } from "ex-excalidraw-element";
 
-import { randomInteger, cloneJSON } from "@excalidraw/common";
+import { randomInteger, cloneJSON } from "ex-excalidraw-common";
 
 import type {
   ExcalidrawElement,
   OrderedExcalidrawElement,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import { reconcileElements } from "../../data/reconcile";
 

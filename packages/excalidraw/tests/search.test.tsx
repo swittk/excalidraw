@@ -5,12 +5,12 @@ import {
   CLASSES,
   DEFAULT_SIDEBAR,
   KEYS,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import type {
   ExcalidrawFrameLikeElement,
   ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import { Excalidraw } from "../index";
 

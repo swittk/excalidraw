@@ -1,9 +1,9 @@
-import { arrayToMap, isShallowEqual } from "@excalidraw/common";
+import { arrayToMap, isShallowEqual } from "ex-excalidraw-common";
 
 import type {
   AppState,
   InteractiveCanvasAppState,
-} from "@excalidraw/excalidraw/types";
+} from "ex-excalidraw/types";
 
 import { getElementAbsoluteCoords, getElementBounds } from "./bounds";
 import { isElementInViewport } from "./sizeHelpers";

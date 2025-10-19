@@ -1,6 +1,6 @@
-import { CaptureUpdateAction } from "@excalidraw/element";
+import { CaptureUpdateAction } from "ex-excalidraw-element";
 
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "ex-excalidraw-element/types";
 
 import {
   getConversionTypeFromElements,

@@ -7,36 +7,36 @@ import {
   getEllipseShape,
   getFreedrawShape,
   getPolygonShape,
-} from "@excalidraw/utils/shape";
+} from "ex-excalidraw-utils/shape";
 
 import {
   pointFrom,
   pointDistance,
   type LocalPoint,
   pointRotateRads,
-} from "@excalidraw/math";
+} from "ex-excalidraw-math";
 import {
   ROUGHNESS,
   isTransparent,
   assertNever,
   COLOR_PALETTE,
   LINE_POLYGON_POINT_MERGE_DISTANCE,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import { RoughGenerator } from "roughjs/bin/generator";
 
-import type { GlobalPoint } from "@excalidraw/math";
+import type { GlobalPoint } from "ex-excalidraw-math";
 
-import type { Mutable } from "@excalidraw/common/utility-types";
+import type { Mutable } from "ex-excalidraw-common/utility-types";
 
 import type {
   AppState,
   EmbedsValidationStatus,
-} from "@excalidraw/excalidraw/types";
+} from "ex-excalidraw/types";
 import type {
   ElementShape,
   ElementShapes,
-} from "@excalidraw/excalidraw/scene/types";
+} from "ex-excalidraw/scene/types";
 
 import { elementWithCanvasCache } from "./renderElement";
 

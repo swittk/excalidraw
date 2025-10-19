@@ -9,9 +9,9 @@ import {
   vectorFromPoint,
   curveLength,
   curvePointAtLength,
-} from "@excalidraw/math";
+} from "ex-excalidraw-math";
 
-import { getCurvePathOps } from "@excalidraw/utils/shape";
+import { getCurvePathOps } from "ex-excalidraw-utils/shape";
 
 import {
   DRAGGING_THRESHOLD,
@@ -21,15 +21,15 @@ import {
   invariant,
   tupleToCoors,
   viewportCoordsToSceneCoords,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import {
   deconstructLinearOrFreeDrawElement,
   isPathALoop,
   type Store,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import type { Radians } from "@excalidraw/math";
+import type { Radians } from "ex-excalidraw-math";
 
 import type {
   AppState,
@@ -38,9 +38,9 @@ import type {
   AppClassProperties,
   NullableGridSize,
   Zoom,
-} from "@excalidraw/excalidraw/types";
+} from "ex-excalidraw/types";
 
-import type { Mutable } from "@excalidraw/common/utility-types";
+import type { Mutable } from "ex-excalidraw-common/utility-types";
 
 import {
   bindOrUnbindLinearElement,

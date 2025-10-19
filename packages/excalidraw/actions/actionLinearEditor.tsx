@@ -2,18 +2,18 @@ import {
   isElbowArrow,
   isLinearElement,
   isLineElement,
-} from "@excalidraw/element";
-import { arrayToMap, invariant } from "@excalidraw/common";
+} from "ex-excalidraw-element";
+import { arrayToMap, invariant } from "ex-excalidraw-common";
 
 import {
   toggleLinePolygonState,
   CaptureUpdateAction,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
 import type {
   ExcalidrawLinearElement,
   ExcalidrawLineElement,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import { DEFAULT_CATEGORIES } from "../components/CommandPalette/CommandPalette";
 import { ToolButton } from "../components/ToolButton";

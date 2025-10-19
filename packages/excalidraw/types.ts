@@ -3,13 +3,13 @@ import type {
   UserIdleState,
   throttleRAF,
   MIME_TYPES,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import type { SuggestedBinding } from "@excalidraw/element";
+import type { SuggestedBinding } from "ex-excalidraw-element";
 
-import type { LinearElementEditor } from "@excalidraw/element";
+import type { LinearElementEditor } from "ex-excalidraw-element";
 
-import type { MaybeTransformHandleType } from "@excalidraw/element";
+import type { MaybeTransformHandleType } from "ex-excalidraw-element";
 
 import type {
   PointerType,
@@ -33,20 +33,20 @@ import type {
   ExcalidrawIframeLikeElement,
   OrderedExcalidrawElement,
   ExcalidrawNonSelectionElement,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import type {
   Merge,
   MaybePromise,
   ValueOf,
   MakeBrand,
-} from "@excalidraw/common/utility-types";
+} from "ex-excalidraw-common/utility-types";
 
 import type {
   CaptureUpdateActionType,
   DurableIncrement,
   EphemeralIncrement,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
 import type { ActionManager } from "./actions/manager";
 import type { Action } from "./actions/types";

@@ -1,8 +1,8 @@
-import { THEME } from "@excalidraw/common";
+import { THEME } from "ex-excalidraw-common";
 import oc from "open-color";
 import React from "react";
 
-import type { Theme } from "@excalidraw/element/types";
+import type { Theme } from "ex-excalidraw-element/types";
 
 // https://github.com/tholman/github-corners
 export const GitHubCorner = React.memo(

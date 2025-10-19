@@ -1,8 +1,8 @@
-import { THEME, THEME_FILTER } from "@excalidraw/common";
+import { THEME, THEME_FILTER } from "ex-excalidraw-common";
 
-import { FIXED_BINDING_DISTANCE } from "@excalidraw/element";
-import { getDiamondPoints } from "@excalidraw/element";
-import { elementCenterPoint, getCornerRadius } from "@excalidraw/element";
+import { FIXED_BINDING_DISTANCE } from "ex-excalidraw-element";
+import { getDiamondPoints } from "ex-excalidraw-element";
+import { elementCenterPoint, getCornerRadius } from "ex-excalidraw-element";
 
 import {
   curve,
@@ -13,13 +13,13 @@ import {
   offsetPointsForQuadraticBezier,
   pointFrom,
   pointRotateRads,
-} from "@excalidraw/math";
+} from "ex-excalidraw-math";
 
 import type {
   ElementsMap,
   ExcalidrawDiamondElement,
   ExcalidrawRectanguloidElement,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import type { StaticCanvasRenderConfig } from "../scene/types";
 import type { AppState, StaticCanvasAppState } from "../types";

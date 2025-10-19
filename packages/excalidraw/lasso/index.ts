@@ -2,28 +2,28 @@ import {
   type GlobalPoint,
   type LineSegment,
   pointFrom,
-} from "@excalidraw/math";
+} from "ex-excalidraw-math";
 
-import { getElementLineSegments } from "@excalidraw/element";
-import { LinearElementEditor } from "@excalidraw/element";
+import { getElementLineSegments } from "ex-excalidraw-element";
+import { LinearElementEditor } from "ex-excalidraw-element";
 import {
   isFrameLikeElement,
   isLinearElement,
   isTextElement,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { getFrameChildren } from "@excalidraw/element";
-import { selectGroupsForSelectedElements } from "@excalidraw/element";
+import { getFrameChildren } from "ex-excalidraw-element";
+import { selectGroupsForSelectedElements } from "ex-excalidraw-element";
 
-import { getContainerElement } from "@excalidraw/element";
+import { getContainerElement } from "ex-excalidraw-element";
 
-import { arrayToMap, easeOut, isShallowEqual } from "@excalidraw/common";
+import { arrayToMap, easeOut, isShallowEqual } from "ex-excalidraw-common";
 
 import type {
   ExcalidrawElement,
   ExcalidrawLinearElement,
   NonDeleted,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
 import { type AnimationFrameHandler } from "../animation-frame-handler";
 

@@ -1,4 +1,4 @@
-import { exportToCanvas, exportToSvg } from "@excalidraw/utils/export";
+import { exportToCanvas, exportToSvg } from "ex-excalidraw-utils/export";
 import OpenColor from "open-color";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -9,7 +9,7 @@ import {
   VERSIONS,
   chunk,
   getExportSource,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import { EditorLocalStorage } from "../data/EditorLocalStorage";
 import { canvasToBlob, resizeImageFile } from "../data/blob";

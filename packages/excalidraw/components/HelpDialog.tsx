@@ -1,8 +1,8 @@
 import React from "react";
 
-import { isDarwin, isFirefox, isWindows } from "@excalidraw/common";
+import { isDarwin, isFirefox, isWindows } from "ex-excalidraw-common";
 
-import { KEYS, getShortcutKey } from "@excalidraw/common";
+import { KEYS, getShortcutKey } from "ex-excalidraw-common";
 
 import { getShortcutFromShortcutName } from "../actions/shortcuts";
 import { probablySupportsClipboardBlob } from "../clipboard";

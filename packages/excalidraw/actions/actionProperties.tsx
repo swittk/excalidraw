@@ -1,4 +1,4 @@
-import { pointFrom } from "@excalidraw/math";
+import { pointFrom } from "ex-excalidraw-math";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -21,24 +21,24 @@ import {
   getLineHeight,
   isTransparent,
   reduceToCommonValue,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { canBecomePolygon, getNonDeletedElements } from "@excalidraw/element";
+import { canBecomePolygon, getNonDeletedElements } from "ex-excalidraw-element";
 
 import {
   bindLinearElement,
   calculateFixedPointForElbowArrowBinding,
   updateBoundElements,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { LinearElementEditor } from "@excalidraw/element";
+import { LinearElementEditor } from "ex-excalidraw-element";
 
-import { newElementWith } from "@excalidraw/element";
+import { newElementWith } from "ex-excalidraw-element";
 
 import {
   getBoundTextElement,
   redrawTextBoundingBox,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
 import {
   isArrowElement,
@@ -48,17 +48,17 @@ import {
   isLineElement,
   isTextElement,
   isUsingAdaptiveRadius,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { hasStrokeColor } from "@excalidraw/element";
+import { hasStrokeColor } from "ex-excalidraw-element";
 
 import {
   updateElbowArrowPoints,
   CaptureUpdateAction,
   toggleLinePolygonState,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import type { LocalPoint } from "@excalidraw/math";
+import type { LocalPoint } from "ex-excalidraw-math";
 
 import type {
   Arrowhead,
@@ -70,11 +70,11 @@ import type {
   FontFamilyValues,
   TextAlign,
   VerticalAlign,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
-import type { Scene } from "@excalidraw/element";
+import type { Scene } from "ex-excalidraw-element";
 
-import type { CaptureUpdateActionType } from "@excalidraw/element";
+import type { CaptureUpdateActionType } from "ex-excalidraw-element";
 
 import { trackEvent } from "../analytics";
 import { RadioSelection } from "../components/RadioSelection";

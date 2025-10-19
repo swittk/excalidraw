@@ -16,7 +16,7 @@ import {
   vectorSubtract,
   vectorDot,
   vectorNormalize,
-} from "@excalidraw/math";
+} from "ex-excalidraw-math";
 
 import {
   COLOR_PALETTE,
@@ -105,7 +105,7 @@ import {
   MQ_MAX_TABLET,
   MQ_MAX_HEIGHT_LANDSCAPE,
   MQ_MAX_WIDTH_LANDSCAPE,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import {
   getObservedAppState,
@@ -240,9 +240,9 @@ import {
   StoreDelta,
   type ApplyToOptions,
   positionElementsOnGrid,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import type { LocalPoint, Radians } from "@excalidraw/math";
+import type { LocalPoint, Radians } from "ex-excalidraw-math";
 
 import type {
   ExcalidrawElement,
@@ -267,9 +267,9 @@ import type {
   ExcalidrawArrowElement,
   ExcalidrawElbowArrowElement,
   SceneElementsMap,
-} from "@excalidraw/element/types";
+} from "ex-excalidraw-element/types";
 
-import type { Mutable, ValueOf } from "@excalidraw/common/utility-types";
+import type { Mutable, ValueOf } from "ex-excalidraw-common/utility-types";
 
 import {
   actionAddToLibrary,
@@ -3991,7 +3991,7 @@ class App extends React.Component<AppProps, AppState> {
        *  - `CaptureUpdateAction.NEVER`: Updates never make it to undo/redo stack. Use for remote updates or scene initialization.
        *  - `CaptureUpdateAction.EVENTUALLY`: Updates will be eventually be captured as part of a future increment.
        *
-       * Check [API docs](https://docs.excalidraw.com/docs/@excalidraw/excalidraw/api/props/excalidraw-api#captureUpdate) for more details.
+       * Check [API docs](https://docs.excalidraw.com/docs/ex-excalidraw/api/props/excalidraw-api#captureUpdate) for more details.
        *
        * @default CaptureUpdateAction.EVENTUALLY
        */
@@ -11472,20 +11472,6 @@ class App extends React.Component<AppProps, AppState> {
 // -----------------------------------------------------------------------------
 // TEST HOOKS
 // -----------------------------------------------------------------------------
-declare global {
-  interface Window {
-    h: {
-      scene: Scene;
-      elements: readonly ExcalidrawElement[];
-      state: AppState;
-      setState: React.Component<any, AppState>["setState"];
-      app: InstanceType<typeof App>;
-      history: History;
-      store: Store;
-    };
-  }
-}
-
 export const createTestHook = () => {
   if (isTestEnv() || isDevEnv()) {
     window.h = window.h || ({} as Window["h"]);

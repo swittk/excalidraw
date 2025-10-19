@@ -1,4 +1,4 @@
-import { pointFrom } from "@excalidraw/math";
+import { pointFrom } from "ex-excalidraw-math";
 
 import {
   COLOR_PALETTE,
@@ -9,17 +9,17 @@ import {
   VERTICAL_ALIGN,
   randomId,
   isDevEnv,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import {
   newTextElement,
   newLinearElement,
   newElement,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import type { Radians } from "@excalidraw/math";
+import type { Radians } from "ex-excalidraw-math";
 
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "ex-excalidraw-element/types";
 
 export type ChartElements = readonly NonDeletedExcalidrawElement[];
 

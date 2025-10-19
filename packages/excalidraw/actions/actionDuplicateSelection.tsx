@@ -4,22 +4,22 @@ import {
   MOBILE_ACTION_BUTTON_BG,
   arrayToMap,
   getShortcutKey,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { getNonDeletedElements } from "@excalidraw/element";
+import { getNonDeletedElements } from "ex-excalidraw-element";
 
-import { LinearElementEditor } from "@excalidraw/element";
+import { LinearElementEditor } from "ex-excalidraw-element";
 
 import {
   getSelectedElements,
   getSelectionStateForElements,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { syncMovedIndices } from "@excalidraw/element";
+import { syncMovedIndices } from "ex-excalidraw-element";
 
-import { duplicateElements } from "@excalidraw/element";
+import { duplicateElements } from "ex-excalidraw-element";
 
-import { CaptureUpdateAction } from "@excalidraw/element";
+import { CaptureUpdateAction } from "ex-excalidraw-element";
 
 import { ToolButton } from "../components/ToolButton";
 import { DuplicateIcon } from "../components/icons";

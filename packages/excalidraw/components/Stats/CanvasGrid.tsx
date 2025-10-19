@@ -1,4 +1,4 @@
-import type { Scene } from "@excalidraw/element";
+import type { Scene } from "ex-excalidraw-element";
 
 import { getNormalizedGridStep } from "../../scene";
 

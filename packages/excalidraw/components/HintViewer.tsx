@@ -1,4 +1,4 @@
-import { CANVAS_SEARCH_TAB, DEFAULT_SIDEBAR } from "@excalidraw/common";
+import { CANVAS_SEARCH_TAB, DEFAULT_SIDEBAR } from "ex-excalidraw-common";
 
 import {
   isFlowchartNodeElement,
@@ -7,11 +7,11 @@ import {
   isLineElement,
   isTextBindableContainer,
   isTextElement,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { getShortcutKey } from "@excalidraw/common";
+import { getShortcutKey } from "ex-excalidraw-common";
 
-import { isNodeInFlowchart } from "@excalidraw/element";
+import { isNodeInFlowchart } from "ex-excalidraw-element";
 
 import { t } from "../i18n";
 import { isEraserActive } from "../appState";

@@ -1,6 +1,6 @@
-import { arrayToMap, findIndex, findLastIndex } from "@excalidraw/common";
+import { arrayToMap, findIndex, findLastIndex } from "ex-excalidraw-common";
 
-import type { AppState } from "@excalidraw/excalidraw/types";
+import type { AppState } from "ex-excalidraw/types";
 
 import { isFrameLikeElement } from "./typeChecks";
 

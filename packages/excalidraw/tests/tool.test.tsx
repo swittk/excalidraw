@@ -1,6 +1,6 @@
 import React from "react";
 
-import { resolvablePromise } from "@excalidraw/common";
+import { resolvablePromise } from "ex-excalidraw-common";
 
 import { Excalidraw } from "../index";
 

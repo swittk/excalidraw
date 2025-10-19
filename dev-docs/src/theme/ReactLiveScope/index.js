@@ -3,16 +3,16 @@ import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import initialData from "@site/src/initialData";
 import { useColorMode } from "@docusaurus/theme-common";
 
-import "@excalidraw/excalidraw/index.css";
+import "ex-excalidraw/index.css";
 
 let ExcalidrawComp = {};
 if (ExecutionEnvironment.canUseDOM) {
-  ExcalidrawComp = require("@excalidraw/excalidraw");
+  ExcalidrawComp = require("ex-excalidraw");
 }
 const Excalidraw = React.forwardRef((props, ref) => {
   if (!window.EXCALIDRAW_ASSET_PATH) {
     window.EXCALIDRAW_ASSET_PATH =
-      "https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/";
+      "https://esm.sh/ex-excalidraw@0.18.0/dist/prod/";
   }
 
   const { colorMode } = useColorMode();

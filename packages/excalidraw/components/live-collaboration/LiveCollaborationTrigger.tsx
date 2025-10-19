@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { isMobileOrTablet, MQ_MIN_WIDTH_DESKTOP } from "@excalidraw/common";
+import { isMobileOrTablet, MQ_MIN_WIDTH_DESKTOP } from "ex-excalidraw-common";
 
 import { t } from "../../i18n";
 import { Button } from "../Button";

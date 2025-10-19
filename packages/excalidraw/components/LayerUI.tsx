@@ -9,15 +9,15 @@ import {
   arrayToMap,
   capitalizeString,
   isShallowEqual,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { mutateElement } from "@excalidraw/element";
+import { mutateElement } from "ex-excalidraw-element";
 
-import { showSelectedShapeActions } from "@excalidraw/element";
+import { showSelectedShapeActions } from "ex-excalidraw-element";
 
-import { ShapeCache } from "@excalidraw/element";
+import { ShapeCache } from "ex-excalidraw-element";
 
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "ex-excalidraw-element/types";
 
 import { actionToggleStats } from "../actions";
 import { trackEvent } from "../analytics";

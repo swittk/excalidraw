@@ -1,6 +1,6 @@
-import { isDarwin, getShortcutKey } from "@excalidraw/common";
+import { isDarwin, getShortcutKey } from "ex-excalidraw-common";
 
-import type { SubtypeOf } from "@excalidraw/common/utility-types";
+import type { SubtypeOf } from "ex-excalidraw-common/utility-types";
 
 import { t } from "../i18n";
 

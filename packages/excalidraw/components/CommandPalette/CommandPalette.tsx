@@ -9,11 +9,11 @@ import {
   capitalizeString,
   getShortcutKey,
   isWritableElement,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { actionToggleShapeSwitch } from "@excalidraw/excalidraw/actions/actionToggleShapeSwitch";
+import { actionToggleShapeSwitch } from "ex-excalidraw/actions/actionToggleShapeSwitch";
 
-import type { MarkRequired } from "@excalidraw/common/utility-types";
+import type { MarkRequired } from "ex-excalidraw-common/utility-types";
 
 import {
   actionClearCanvas,

@@ -1,22 +1,22 @@
-import { getNonDeletedElements } from "@excalidraw/element";
-import { mutateElement } from "@excalidraw/element";
-import { newFrameElement } from "@excalidraw/element";
-import { isFrameLikeElement } from "@excalidraw/element";
+import { getNonDeletedElements } from "ex-excalidraw-element";
+import { mutateElement } from "ex-excalidraw-element";
+import { newFrameElement } from "ex-excalidraw-element";
+import { isFrameLikeElement } from "ex-excalidraw-element";
 import {
   addElementsToFrame,
   removeAllElementsFromFrame,
-} from "@excalidraw/element";
-import { getFrameChildren } from "@excalidraw/element";
+} from "ex-excalidraw-element";
+import { getFrameChildren } from "ex-excalidraw-element";
 
-import { KEYS, updateActiveTool } from "@excalidraw/common";
+import { KEYS, updateActiveTool } from "ex-excalidraw-common";
 
-import { getElementsInGroup } from "@excalidraw/element";
+import { getElementsInGroup } from "ex-excalidraw-element";
 
-import { getCommonBounds } from "@excalidraw/element";
+import { getCommonBounds } from "ex-excalidraw-element";
 
-import { CaptureUpdateAction } from "@excalidraw/element";
+import { CaptureUpdateAction } from "ex-excalidraw-element";
 
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "ex-excalidraw-element/types";
 
 import { setCursorForShape } from "../cursor";
 import { frameToolIcon } from "../components/icons";

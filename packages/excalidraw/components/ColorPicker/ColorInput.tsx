@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { KEYS, getShortcutKey } from "@excalidraw/common";
+import { KEYS, getShortcutKey } from "ex-excalidraw-common";
 
 import { useAtom } from "../../editor-jotai";
 import { t } from "../../i18n";

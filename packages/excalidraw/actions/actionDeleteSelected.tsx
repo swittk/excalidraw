@@ -2,28 +2,28 @@ import {
   KEYS,
   MOBILE_ACTION_BUTTON_BG,
   updateActiveTool,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { getNonDeletedElements } from "@excalidraw/element";
-import { fixBindingsAfterDeletion } from "@excalidraw/element";
-import { LinearElementEditor } from "@excalidraw/element";
-import { newElementWith } from "@excalidraw/element";
-import { getContainerElement } from "@excalidraw/element";
+import { getNonDeletedElements } from "ex-excalidraw-element";
+import { fixBindingsAfterDeletion } from "ex-excalidraw-element";
+import { LinearElementEditor } from "ex-excalidraw-element";
+import { newElementWith } from "ex-excalidraw-element";
+import { getContainerElement } from "ex-excalidraw-element";
 import {
   isBoundToContainer,
   isElbowArrow,
   isFrameLikeElement,
-} from "@excalidraw/element";
-import { getFrameChildren } from "@excalidraw/element";
+} from "ex-excalidraw-element";
+import { getFrameChildren } from "ex-excalidraw-element";
 
 import {
   getElementsInGroup,
   selectGroupsForSelectedElements,
-} from "@excalidraw/element";
+} from "ex-excalidraw-element";
 
-import { CaptureUpdateAction } from "@excalidraw/element";
+import { CaptureUpdateAction } from "ex-excalidraw-element";
 
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "ex-excalidraw-element/types";
 
 import { t } from "../i18n";
 import { getSelectedElements, isSomeElementSelected } from "../scene";

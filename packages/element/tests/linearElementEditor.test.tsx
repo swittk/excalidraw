@@ -1,4 +1,4 @@
-import { pointCenter, pointFrom } from "@excalidraw/math";
+import { pointCenter, pointFrom } from "ex-excalidraw-math";
 import { act, queryByTestId, queryByText } from "@testing-library/react";
 import { vi } from "vitest";
 
@@ -8,23 +8,23 @@ import {
   KEYS,
   reseed,
   arrayToMap,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
-import { Excalidraw } from "@excalidraw/excalidraw";
-import * as InteractiveCanvas from "@excalidraw/excalidraw/renderer/interactiveScene";
-import * as StaticScene from "@excalidraw/excalidraw/renderer/staticScene";
-import { API } from "@excalidraw/excalidraw/tests/helpers/api";
+import { Excalidraw } from "ex-excalidraw";
+import * as InteractiveCanvas from "ex-excalidraw/renderer/interactiveScene";
+import * as StaticScene from "ex-excalidraw/renderer/staticScene";
+import { API } from "ex-excalidraw/tests/helpers/api";
 
-import { Keyboard, Pointer, UI } from "@excalidraw/excalidraw/tests/helpers/ui";
+import { Keyboard, Pointer, UI } from "ex-excalidraw/tests/helpers/ui";
 import {
   screen,
   render,
   fireEvent,
   GlobalTestState,
   unmountComponent,
-} from "@excalidraw/excalidraw/tests/test-utils";
+} from "ex-excalidraw/tests/test-utils";
 
-import type { GlobalPoint, LocalPoint } from "@excalidraw/math";
+import type { GlobalPoint, LocalPoint } from "ex-excalidraw-math";
 
 import { wrapText } from "../src";
 import * as textElementUtils from "../src/textElement";

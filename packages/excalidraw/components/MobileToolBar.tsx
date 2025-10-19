@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 
-import { KEYS, capitalizeString } from "@excalidraw/common";
+import { KEYS, capitalizeString } from "ex-excalidraw-common";
 
 import { trackEvent } from "../analytics";
 

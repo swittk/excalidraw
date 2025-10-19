@@ -2,16 +2,16 @@ import {
   TEXT_AUTOWRAP_THRESHOLD,
   getGridPoint,
   getFontString,
-} from "@excalidraw/common";
+} from "ex-excalidraw-common";
 
 import type {
   AppState,
   NormalizedZoomValue,
   NullableGridSize,
   PointerDownState,
-} from "@excalidraw/excalidraw/types";
+} from "ex-excalidraw/types";
 
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "ex-excalidraw-element/types";
 
 import { updateBoundElements } from "./binding";
 import { getCommonBounds } from "./bounds";

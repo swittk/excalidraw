@@ -39,7 +39,7 @@ const getEnvValue = (key: string): string | undefined => {
   }
 };
 
-const packageName = getEnvValue("PKG_NAME") || "@excalidraw/excalidraw";
+const packageName = getEnvValue("PKG_NAME") || "ex-excalidraw";
 const packageVersion = getEnvValue("PKG_VERSION");
 
 const defaultAssetFallbackUrl = `https://esm.sh/${packageName}${packageVersion ? `@${packageVersion}` : ""}/dist/prod/`;
