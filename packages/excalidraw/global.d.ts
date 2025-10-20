@@ -52,7 +52,7 @@ declare module "png-chunks-extract" {
 // -----------------------------------------------------------------------------
 
 interface Blob {
-  handle?: import("browser-fs-acces").FileSystemHandle;
+  handle?: import("browser-fs-access").FileSystemHandle;
   name?: string;
 }
 
@@ -107,5 +107,12 @@ interface CustomMatchers {
 declare namespace jest {
   interface Expect extends CustomMatchers {}
   interface Matchers extends CustomMatchers {}
+}
+
+declare module "open-color/open-color.json" {
+  import type OpenColor from "open-color";
+
+  const colors: OpenColor;
+  export default colors;
 }
 

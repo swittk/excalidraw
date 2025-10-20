@@ -1,6 +1,6 @@
 {
   "name": "ex-excalidraw",
-  "version": "0.18.2",
+  "version": "0.18.3",
   "type": "module",
   "types": "./dist/types/excalidraw/index.d.ts",
   "main": "./dist/cjs/index.cjs",
@@ -80,9 +80,9 @@
   },
   "dependencies": {
     "@braintree/sanitize-url": "6.0.2",
-    "ex-excalidraw-common": "0.18.1",
-    "ex-excalidraw-element": "0.18.1",
-    "ex-excalidraw-math": "0.18.1",
+    "ex-excalidraw-common": "0.18.2",
+    "ex-excalidraw-element": "0.18.2",
+    "ex-excalidraw-math": "0.18.2",
     "@excalidraw/laser-pointer": "1.3.1",
     "@excalidraw/mermaid-to-excalidraw": "1.1.3",
     "@excalidraw/random-username": "1.1.0",

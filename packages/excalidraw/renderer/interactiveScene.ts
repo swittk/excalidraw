@@ -5,7 +5,7 @@ import {
   type LocalPoint,
   type Radians,
 } from "ex-excalidraw-math";
-import oc from "open-color";
+import oc from "open-color/open-color.json" assert { type: "json" };
 
 import {
   arrayToMap,

@@ -1,4 +1,4 @@
-import oc from "open-color";
+import oc from "open-color/open-color.json" assert { type: "json" };
 
 import type { Merge } from "./utility-types";
 
@@ -17,8 +17,10 @@ const pick = <R extends Record<string, any>, K extends readonly (keyof R)[]>(
   }, {} as Pick<R, K[number]>) as Pick<R, K[number]>;
 };
 
+type OpenColorMap = typeof oc;
+
 export type ColorPickerColor =
-  | Exclude<keyof oc, "indigo" | "lime">
+  | Exclude<keyof OpenColorMap, "indigo" | "lime">
   | "transparent"
   | "bronze";
 export type ColorTuple = readonly [string, string, string, string, string];

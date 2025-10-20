@@ -1,9 +1,3 @@
-import {
-  fileOpen as _fileOpen,
-  fileSave as _fileSave,
-  supported as nativeFileSystemSupported,
-} from "browser-fs-access";
-
 import { EVENT, MIME_TYPES, debounce } from "ex-excalidraw-common";
 
 import { AbortError } from "../errors";
@@ -12,9 +6,52 @@ import { normalizeFile } from "./blob";
 
 import type { FileSystemHandle } from "browser-fs-access";
 
+type BrowserFSModule = typeof import("browser-fs-access");
+
 type FILE_EXTENSION = Exclude<keyof typeof MIME_TYPES, "binary">;
 
 const INPUT_CHANGE_INTERVAL_MS = 5000;
+
+const isBrowserEnvironment = () =>
+  typeof window !== "undefined" && typeof document !== "undefined";
+
+let browserFSModulePromise: Promise<BrowserFSModule> | null = null;
+
+const loadBrowserFSModule = async () => {
+  if (!browserFSModulePromise) {
+    if (!isBrowserEnvironment()) {
+      throw new AbortError();
+    }
+    browserFSModulePromise = import("browser-fs-access");
+  }
+  return browserFSModulePromise;
+};
+
+const detectNativeFileSystemSupport = () => {
+  const scope =
+    typeof window !== "undefined"
+      ? window
+      : typeof self !== "undefined"
+        ? (self as typeof globalThis & { top?: Window | null })
+        : undefined;
+
+  if (!scope) {
+    return false;
+  }
+
+  if ("top" in scope && scope.top && scope !== scope.top) {
+    try {
+      // Accessing `top` can throw for cross-origin frames.
+      void scope.top;
+    } catch {
+      return false;
+    }
+  }
+
+  return "showOpenFilePicker" in scope;
+};
+
+export const nativeFileSystemSupported = detectNativeFileSystemSupport();
 
 export const fileOpen = async <M extends boolean | undefined = false>(opts: {
   extensions?: FILE_EXTENSION[];
@@ -37,12 +74,22 @@ export const fileOpen = async <M extends boolean | undefined = false>(opts: {
     return acc.concat(`.${ext}`);
   }, [] as string[]);
 
-  const files = await _fileOpen({
+  if (!isBrowserEnvironment()) {
+    throw new AbortError();
+  }
+
+  const { fileOpen: fileOpenImpl } = await loadBrowserFSModule();
+
+  const files = await (fileOpenImpl as unknown as (options: any) => Promise<any>)({
     description: opts.description,
     extensions,
     mimeTypes,
     multiple: opts.multiple ?? false,
-    legacySetup: (resolve, reject, input) => {
+    legacySetup: (
+      resolve: (value: RetType) => void,
+      reject: () => void,
+      input: HTMLInputElement,
+    ) => {
       const scheduleRejection = debounce(reject, INPUT_CHANGE_INTERVAL_MS);
       const focusHandler = () => {
         checkForFile();
@@ -63,7 +110,7 @@ export const fileOpen = async <M extends boolean | undefined = false>(opts: {
       const interval = window.setInterval(() => {
         checkForFile();
       }, INPUT_CHANGE_INTERVAL_MS);
-      return (rejectPromise) => {
+      return (rejectPromise?: (reason?: any) => void) => {
         clearInterval(interval);
         scheduleRejection.cancel();
         window.removeEventListener(EVENT.FOCUS, focusHandler);
@@ -86,7 +133,7 @@ export const fileOpen = async <M extends boolean | undefined = false>(opts: {
   return (await normalizeFile(files)) as RetType;
 };
 
-export const fileSave = (
+export const fileSave = async (
   blob: Blob | Promise<Blob>,
   opts: {
     /** supply without the extension */
@@ -99,7 +146,13 @@ export const fileSave = (
     fileHandle?: FileSystemHandle | null;
   },
 ) => {
-  return _fileSave(
+  if (!isBrowserEnvironment()) {
+    throw new AbortError();
+  }
+
+  const { fileSave: fileSaveImpl } = await loadBrowserFSModule();
+
+  return fileSaveImpl(
     blob,
     {
       fileName: `${opts.name}.${opts.extension}`,
@@ -110,6 +163,4 @@ export const fileSave = (
     opts.fileHandle,
   );
 };
-
-export { nativeFileSystemSupported };
 export type { FileSystemHandle };

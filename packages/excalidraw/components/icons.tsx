@@ -7,7 +7,7 @@
 // to determine whether or not the icons should be mirrored in right-to-left languages.
 
 import clsx from "clsx";
-import oc from "open-color";
+import oc from "open-color/open-color.json" assert { type: "json" };
 import React from "react";
 
 import { THEME } from "ex-excalidraw-common";

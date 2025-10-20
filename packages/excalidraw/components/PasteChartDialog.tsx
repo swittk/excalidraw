@@ -1,4 +1,4 @@
-import oc from "open-color";
+import oc from "open-color/open-color.json" assert { type: "json" };
 import React, { useLayoutEffect, useRef, useState } from "react";
 
 import type { ChartType } from "ex-excalidraw-element/types";

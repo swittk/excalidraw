@@ -1,5 +1,5 @@
 import { THEME } from "ex-excalidraw-common";
-import oc from "open-color";
+import oc from "open-color/open-color.json" assert { type: "json" };
 import React from "react";
 
 import type { Theme } from "ex-excalidraw-element/types";

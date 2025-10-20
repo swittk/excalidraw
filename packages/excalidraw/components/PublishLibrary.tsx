@@ -1,5 +1,5 @@
 import { exportToCanvas, exportToSvg } from "ex-excalidraw-utils/export";
-import OpenColor from "open-color";
+import OpenColor from "open-color/open-color.json" assert { type: "json" };
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {

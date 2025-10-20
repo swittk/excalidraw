@@ -1,9 +1,9 @@
-import OpenColor from "open-color";
+import OpenColor from "open-color/open-color.json" assert { type: "json" };
 
 import "./Card.scss";
 
 export const Card: React.FC<{
-  color: keyof OpenColor | "primary";
+  color: keyof typeof OpenColor | "primary";
   children?: React.ReactNode;
 }> = ({ children, color }) => {
   return (

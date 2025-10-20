@@ -1,4 +1,4 @@
-import OpenColor from "open-color";
+import OpenColor from "open-color/open-color.json" assert { type: "json" };
 
 import { CURSOR_TYPE, MIME_TYPES, THEME } from "ex-excalidraw-common";
 
